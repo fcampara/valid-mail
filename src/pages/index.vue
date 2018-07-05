@@ -65,10 +65,10 @@ export default {
       console.log(val)
       this.$axios({
         method: 'POST',
-        url: 'http://localhost:5000/valid',
+        url: '/valid',
         data: {
           list: val
-        }
+        } 
       }).then(response => {
         console.log(response)
       }).catch(err => {
