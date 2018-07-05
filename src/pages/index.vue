@@ -68,7 +68,7 @@ export default {
         url: '/valid',
         data: {
           list: val
-        } 
+        }
       }).then(response => {
         console.log(response)
       }).catch(err => {
