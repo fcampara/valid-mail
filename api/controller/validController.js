@@ -3,10 +3,10 @@ const verifier = require('email-verify')
 exports.valid = (list, callback) => {
   verifier.verify('felipe_novo2@hotmail.com', (err, info) => {
     if (err) {
-      console.log(err)
+      callback(err)
     } else {
-      console.log(`Success (T/F): ${info.success}`)
-      console.log(`Info: ${info.info}`)
+      const resp = {success: `Success (T/F): ${info.success}, info: ${info.info}`}
+      callback(resp)
     }
   })
 }

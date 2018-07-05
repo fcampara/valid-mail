@@ -1,5 +1,7 @@
 const express = require('express'),
   app = module.exports = express(),
+  path = require('path'),
+  serveStatic = require('serve-static'),
   bodyParser = require('body-parser'),
   history = require('connect-history-api-fallback'),
   allowCors = (req, res, next) => {
@@ -21,4 +23,5 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 app.use(history())
-app.use(serveStatic(path.join(__dirname, '/dist/spa-mat')))
+let reqPath = path.join(__dirname, '../../dist/pwa-mat')
+app.use(serveStatic(reqPath))

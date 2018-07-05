@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
-    <q-uploader 
-      url="localhost:8000/list" 
+    <q-uploader
+      url="localhost:8000/list"
       @add="add"
       @remove:abort="removeAbort"
       @remove:cancel="removeCancel"
@@ -22,11 +22,11 @@ export default {
   name: 'PageIndex',
 
   data: () => ({
-      url: '',
-      result: {}
+    url: '',
+    result: {}
   }),
   methods: {
-    add(files) {
+    add (files) {
       const csv = require('csvtojson/v2')
       const reader = new FileReader()
       reader.onload = e => {
@@ -36,32 +36,32 @@ export default {
       }
       reader.readAsText(files[0])
     },
-    removeAbort(file) {
+    removeAbort (file) {
       console.log('removeAbort: ', file)
     },
-    removeCancel(file) {
+    removeCancel (file) {
       console.log('removeCancel: ', file)
     },
-    removeDone(file) {
+    removeDone (file) {
       console.log('removeDone: ', file)
     },
-    uploaded(file, xhr) {
-      console.log('uploaded file: ',file)
-      console.log('uploaded xhr: ',xhr)
+    uploaded (file, xhr) {
+      console.log('uploaded file: ', file)
+      console.log('uploaded xhr: ', xhr)
     },
-    fail(file, xhr) {
-      console.log('fail file: ',file)
-      console.log('fail xhr: ',xhr)
+    fail (file, xhr) {
+      console.log('fail file: ', file)
+      console.log('fail xhr: ', xhr)
     },
-    start() {
+    start () {
       console.log('Start')
     },
-    finish() {
+    finish () {
       console.log('Finish')
     }
   },
   watch: {
-    result(val) {
+    result (val) {
       console.log(val)
       this.$axios({
         method: 'POST',
