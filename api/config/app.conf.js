@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-console.log('Teste')
+console.log(__dirname)
+console.log(path.join(__dirname, '../../dist/pwa-mat'))
 app.use(history())
 app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
