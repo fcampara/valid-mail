@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({
   limit: '50mb',
   extended: true
 }))
+
+console.log('Teste')
 app.use(history())
-let reqPath = path.join(__dirname, '../../dist/pwa-mat')
-app.use(serveStatic(reqPath))
+app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
