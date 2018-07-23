@@ -9,7 +9,13 @@ export default {
 
   getters: {
     user (state) {
-      return state.user
+      const user = state.user
+      return {
+        name: user.displayName,
+        email: user.email,
+        uid: user.uid,
+        phoneNumber: user.phoneNumber
+      }
     },
 
     isAuthenticated (state) {
@@ -33,20 +39,17 @@ export default {
       let email = payload.email
       let password = payload.password
 
-      await Firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(user => {
-          commit('SET_USER', user)
-        })
-        .catch(error => {
-          throw error
-        })
+      await Firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
+        commit('SET_USER', user)
+      }).catch(error => {
+        throw error
+      })
     },
 
     async signOut ({ commit }) {
-      await Firebase.auth().signOut()
-        .then(() => {
-          commit('SET_USER', {})
-        })
+      await Firebase.auth().signOut().then(() => {
+        commit('SET_USER', {})
+      })
     }
   }
 }

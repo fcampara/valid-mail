@@ -4,11 +4,9 @@ export default [
     path: '/auth',
     redirect: 'auth/sign-in',
     component: () => import('layouts/auth'),
-    children: [{
-      path: 'sign-in',
-      name: 'signIn',
-      component: () => import('pages/auth/sign-in')
-    }
+    children:
+    [
+      { path: 'sign-in', name: 'signIn', component: () => import('pages/auth/sign-in') }
     ]
   },
 
@@ -16,12 +14,10 @@ export default [
     path: '/',
     component: () => import('layouts/default'),
     meta: { authRequired: true },
-    children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: () => import('pages/index')
-      }
+    children:
+    [
+      { path: '/dashboard', name: 'dashboard', component: () => import('pages/index') },
+      { path: '/list', name: 'list', component: () => import('pages/list') }
     ]
   },
 

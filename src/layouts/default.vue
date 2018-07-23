@@ -1,17 +1,9 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
-        <q-btn
-          flat
-          dense
-          round
+      <q-toolbar color="primary">
+        <q-btn flat dense round aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
         >
           <q-icon name="menu" />
         </q-btn>
@@ -26,15 +18,15 @@
       v-model="leftDrawerOpen"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
+      <q-list no-border link inset-delimiter >
         <q-list-header>Essential Links</q-list-header>
 
         <q-item :to="{ name: 'dashboard' }">
           <q-item-main>Dashboard</q-item-main>
+        </q-item>
+
+        <q-item :to="{ name: 'list' }">
+          <q-item-main>List</q-item-main>
         </q-item>
 
         <q-item @click.native="signOut()">

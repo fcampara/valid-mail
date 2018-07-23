@@ -8,7 +8,7 @@ module.exports = function (ctx) {
       'axios',
       'firebase',
       'boot',
-      'csvtojson'
+      'vue-lodash'
     ],
     css: [
       'app.styl'
@@ -44,7 +44,12 @@ module.exports = function (ctx) {
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
+      i18n: 'pt-br',
       components: [
+        'QSearch',
+        'QSelect',
+        'QTableColumns',
+        'QTable',
         'QUploader',
         'QBtn',
         'QCard',
