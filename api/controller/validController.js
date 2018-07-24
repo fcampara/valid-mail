@@ -9,13 +9,18 @@ exports.valid = (list, callback) => {
 }
 
 async function validation ({list, user, name}) {
+  let keys = ['sys_info', 'sys_valid']
+  for (let k in list[0]) keys.push(k)
+
   let
     listValid = [],
     details = {
+      created_at: Date.now(),
       nameFile: name,
       length: list.length,
       invalid: 0,
-      valid: 0
+      valid: 0,
+      keys: keys
     }
 
   for (let item of list) {
@@ -28,19 +33,22 @@ async function validation ({list, user, name}) {
     await new Promise(resolve => {
       if (email) {
         verifier.verify(email, (err, info) => {
-          item.valid = info.success
+          item.sys_valid = info.success
           if (info.success) {
             details.valid++
           } else {
             details.invalid++
           }
-          listValid.push(err ? {info: `${err}`, item: item} : {info: `Válidado com sucesso`, item: item})
+          const error = err ? `Inválido: ${err}` : ''
+          item.sys_info = error
+          listValid.push(item)
           resolve()
         })
       } else {
         details.invalid++
-        item.valid = false
-        listValid.push({info: 'Formato inválido', item: item})
+        item.sys_valid = false
+        item.sys_info = 'Formato de e-mail inválido'
+        listValid.push(item)
         resolve()
       }
     })

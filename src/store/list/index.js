@@ -1,5 +1,5 @@
 import Firebase from 'firebase/app'
-import _ from 'lodash'
+// import _ from 'lodash'
 export default {
   namespaced: true,
 
@@ -10,7 +10,26 @@ export default {
 
   getters: {
     details (state) {
-      return _.map(state.list, 'details')
+      const list = state.list
+      let details = []
+      for (let item of list) {
+        details.push({
+          id: item.id,
+          created_at: item.details.created_at,
+          invalid: item.details.invalid,
+          valid: item.details.valid,
+          nameFile: item.details.nameFile,
+          length: item.details.length
+        })
+      }
+
+      return details
+    },
+
+    selectById (state) {
+      return id => {
+        return state.list.find(list => list.id === id)
+      }
     }
   },
 

@@ -64,6 +64,7 @@ export default {
       if (this.file.data) {
         this.$axios({
           method: 'POST',
+          // url: 'http://localhost:5000/valid',
           url: 'http://valid-mail.herokuapp.com/valid',
           data: {
             user: this.user,

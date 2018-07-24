@@ -17,7 +17,8 @@ export default [
     children:
     [
       { path: '/dashboard', name: 'dashboard', component: () => import('pages/index') },
-      { path: '/list', name: 'list', component: () => import('pages/list') }
+      { path: '/list', name: 'list', component: () => import('pages/list') },
+      { path: '/list/:id', name: 'listDetails', component: () => import('pages/listDetails') }
     ]
   },
 

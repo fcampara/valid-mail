@@ -16,9 +16,8 @@ module.exports = function (ctx) {
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons',
-      ctx.theme.ios ? 'ionicons' : null
-      // 'mdi',
-      // 'fontawesome'
+      ctx.theme.ios ? 'ionicons' : null,
+      'fontawesome'
     ],
     supportIE: false,
     build: {
@@ -46,10 +45,13 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       components: [
+        'QPopover',
         'QSearch',
         'QSelect',
         'QTableColumns',
         'QTable',
+        'QTr',
+        'QTd',
         'QUploader',
         'QBtn',
         'QCard',
@@ -75,13 +77,14 @@ module.exports = function (ctx) {
         'QToolbarTitle'
       ],
       directives: [
-        'Ripple'
+        'Ripple',
+        'CloseOverlay'
       ],
       // Quasar plugins
       plugins: [
         'Notify'
       ],
-      iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
+      iconSet: 'fontawesome'
     },
     // animations: 'all' --- includes all animations
     animations: [

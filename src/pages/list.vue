@@ -1,65 +1,106 @@
 <template>
-    <q-table row-key="name" color="secondary"
-      :data="tableData" :columns="columns" :filter="filter" :loading="loading"
-    >
+    <q-table :data="tableData" :columns="columns" row-key="name" :filter="filter" :loading="loading">
       <template slot="top-left" slot-scope="props">
-        <q-search hide-underline color="secondary" v-model="filter" class="col-6"/>
+        <q-search v-model="filter"/>
       </template>
+
       <template slot="top-right" slot-scope="props">
-        <q-btn flat round dense
-          @click="props.toggleFullscreen"
+        <q-btn
+          flat round dense
           :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen"
         />
       </template>
+
+      <q-tr class="cursor-pointer" slot="body" slot-scope="props" :props="props" @click.native="rowClick(props.row)">
+        <q-td key="nameFile" :props="props">{{ props.row.nameFile }}</q-td>
+        <q-td key="created_at" :props="props">{{ convertTimeStamp(props.row.created_at) }}</q-td>
+        <q-td key="length" :props="props">{{ props.row.length }}</q-td>
+        <q-td key="valid" :props="props">{{ props.row.valid }}</q-td>
+        <q-td key="invalid" :props="props">{{ props.row.invalid }}</q-td>
+        <q-popover touch-position>
+          <div class="group" style="text-align: center;">
+            <q-btn flat color="warning" v-close-overlay @click="edit()">
+              <q-icon name="fa fa-edit"/>
+            </q-btn>
+            <q-btn flat color="negative" v-close-overlay @click="remove()">
+              <q-icon name="fa fa-trash"/>
+            </q-btn>
+            <q-btn flat color="primary" v-close-overlay @click="download()">
+              <q-icon name="fa fa-download"/>
+            </q-btn>
+            <q-btn flat color="info" v-close-overlay @click="open()">
+              <q-icon name="fa fa-search"/>
+            </q-btn>
+          </div>
+        </q-popover>
+      </q-tr>
     </q-table>
 </template>
 <script>
+import { date } from 'quasar'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'ListPage',
   data: () => ({
-    options: [
-      { label: 'Horizontal', value: 'horizontal' },
-      { label: 'Vertical', value: 'vertical' },
-      { label: 'Cell', value: 'cell' },
-      { label: 'None', value: 'none' }
-    ],
     tableData: [],
     columns: [
       { name: 'nameFile', label: 'Nome do arquivo', field: 'nameFile', align: 'left', sortable: true },
+      { name: 'created_at', label: 'Criado', field: 'length', sortable: true },
       { name: 'length', label: 'Quantidade', field: 'length', sortable: true },
       { name: 'valid', label: 'Válidos', field: 'valid', sortable: true },
       { name: 'invalid', label: 'Inválidos', field: 'invalid', sortable: true }
     ],
     filter: '',
     loading: true,
-    separator: 'horizontal',
-    visibleColumns: ['invalid', 'valid', 'length', 'nameFile']
+    rowClicked: ''
   }),
   created () {
-    if (this.load) {
+    if (!this.load) {
+      this.getList()
+    } else {
       this.tableData = this.details()
       this.loading = false
-    } else {
-      this.getList()
     }
   },
   methods: {
     ...mapGetters({
-      details: 'list/details'
+      details: 'list/details',
+      listById: 'list/selectById'
     }),
     ...mapActions({
       getList: 'list/list'
-    })
+    }),
+    convertTimeStamp (timeStamp) {
+      return date.formatDate(timeStamp, 'DD/MM/YY [ás] HH:mm')
+    },
+    rowClick (row) {
+      this.rowClicked = row.id
+    },
+    edit () {
+      console.log('edit')
+    },
+    remove () {
+      console.log('remove')
+    },
+    download () {
+      console.log('download')
+    },
+    open () {
+      const funct = this.listById()
+      const row = funct(this.rowClicked)
+      this.$router.push({ path: `/list/${row.id}` })
+    }
   },
   computed: {
     ...mapState({
-      load: state => state.list.load
+      load: state => state.list.load,
+      list: state => state.list.list
     })
   },
   watch: {
-    load (newValue) {
-      if (newValue === true) {
+    list (newValue) {
+      if (this.load === true) {
         this.tableData = this.details()
         this.loading = false
       }
