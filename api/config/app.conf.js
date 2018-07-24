@@ -7,8 +7,12 @@ const
 
 const
   allowCors = (req, res, next) => {
-    // res.header('Access-Control-Allow-Origin', 'http://localhost:8080')
-    res.header('Access-Control-Allow-Origin', 'http://valid-mail.herokuapp.com')
+    const allowedOrigins = ['http://localhost:8080', 'http://valid-mail.herokuapp.com', 'https://valid-mail.herokuapp.com']
+    const origin = req.headers.origin
+    if (allowedOrigins.indexOf(origin) > -1) {
+      res.setHeader('Access-Control-Allow-Origin', origin)
+    }
+
     res.header('Access-Control-Allow-Methods', 'GET')
     res.header('Access-Control-Allow-Headers', 'Content-Type')
     res.header('Access-Control-Allow-Credentials', 'true')
