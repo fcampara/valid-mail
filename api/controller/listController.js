@@ -1,14 +1,36 @@
-const
-  verifier = require('email-verify'),
-  db = require('../config/db.conf')
+const verifier = require('email-verify')
+const db = require('../config/db.conf')
+const validation = require('../helper/validation.js')
 
-exports.valid = (list, callback) => {
-  const resp = 'Sua lista está sendo válidada!'
-  callback(resp)
-  validation(list)
+module.exports = {
+  validList: (data, callback) => {
+    const { list, user, name } = data
+    let resp = {status: 200, msg: 'Sua lista está sendo válidada'}
+
+    const errorL = validation.arrayList(list)
+    if (errorL) {
+      resp = {status: 400, msg: 'É obrigatório enviar uma lista para ser válidado.', error: errorL}
+      return callback(resp)
+    }
+
+    const errorU = validation.userList(user)
+    if (errorU) {
+      resp = {status: 400, msg: 'Usuário não informado.', error: errorU}
+      return callback(resp)
+    }
+
+    const errorN = validation.nameList(name)
+    if (errorN) {
+      resp = {status: 400, msg: 'Nome do arquivo não informado.', error: errorN}
+      return callback(resp)
+    }
+
+    callback(resp)
+    validList({list, user, name})
+  }
 }
 
-async function validation ({list, user, name}) {
+async function validList ({list, user, name}) {
   let keys = ['sys_info', 'sys_valid']
   for (let k in list[0]) keys.push(k)
 

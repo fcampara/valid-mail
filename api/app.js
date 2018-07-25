@@ -1,14 +1,8 @@
 const app = require('../api/config/app.conf.js')
-const validController = require('../api/controller/validController.js')
+const listController = require('../api/controller/listController.js')
 
-app.post('/valid', (req, res) => {
-  const data = {
-    list: req.body.list,
-    user: req.body.user,
-    name: req.body.name
-  }
-
-  validController.valid(data, resp => {
-    res.json(resp)
+app.post('/api/validation/list', (req, res) => {
+  listController.validList(req.body, resp => {
+    res.status(resp.status).json({msg: resp.msg, error: resp.error.details})
   })
 })
