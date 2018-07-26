@@ -61,24 +61,15 @@ export default {
       }
     },
     upload () {
-      if (this.file.data) {
-        this.$axios({
-          method: 'POST',
-          // url: 'http://localhost:5000/valid',
-          url: 'https://valid-mail.herokuapp.com/valid',
-          data: {
-            user: this.user,
-            name: this.file.name,
-            list: this.file.data
-          }
-        }).then(response => {
-          console.log(response)
-        }).catch(err => {
-          console.error(err)
-        })
-      } else {
-        console.log('error')
-      }
+      this.$axios.post('http://localhost:5000/api/validation/list', {
+        // user: this.user,
+        name: this.file.name,
+        list: this.file.data
+      }).then(response => {
+        console.log(response)
+      }).catch((error) => {
+        console.log(error.response.data)
+      })
     }
   }
 }
