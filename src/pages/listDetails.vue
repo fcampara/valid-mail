@@ -28,15 +28,15 @@ export default {
   },
   computed: {
     ...mapState({
-      load: state => state.list.load
+      load: state => state.validations.load
     })
   },
   methods: {
     ...mapActions({
-      getList: 'list/list'
+      getList: 'validations/list'
     }),
     ...mapGetters({
-      listById: 'list/selectById'
+      listById: 'validations/selectById'
     }),
     buildTable () {
       const funct = this.listById()

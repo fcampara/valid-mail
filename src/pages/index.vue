@@ -2,6 +2,7 @@
   <q-page padding>
     <q-uploader url="http://localhost:5000/valid" @add="add"/>
 
+    <q-input @blur="validSingle()" v-model="email"/>
   <!-- <FilePond
     ref="pond"
     class-name="my-pond"
@@ -30,6 +31,7 @@ export default {
   name: 'PageIndex',
 
   data: () => ({
+    email: '',
     url: '',
     file: {
       name: '',
@@ -45,6 +47,15 @@ export default {
     })
   },
   methods: {
+    validSingle () {
+      this.$axios.post('http://localhost:5000/api/validation/single', {
+        email: this.email
+      }).then(response => {
+        console.log(response)
+      }).catch((error) => {
+        console.log(error.response.data)
+      })
+    },
     add (files) {
       const
         csv = require('csvtojson/v2'),
@@ -62,7 +73,7 @@ export default {
     },
     upload () {
       this.$axios.post('http://localhost:5000/api/validation/list', {
-        // user: this.user,
+        user: this.user,
         name: this.file.name,
         list: this.file.data
       }).then(response => {

@@ -14,7 +14,7 @@
 
       <q-tr class="cursor-pointer" slot="body" slot-scope="props" :props="props" @click.native="rowClick(props.row)">
         <q-td key="nameFile" :props="props">{{ props.row.nameFile }}</q-td>
-        <q-td key="created_at" :props="props">{{ convertTimeStamp(props.row.created_at) }}</q-td>
+        <q-td key="createdAt" :props="props">{{ convertTimeStamp(props.row.createdAt) }}</q-td>
         <q-td key="length" :props="props">{{ props.row.length }}</q-td>
         <q-td key="valid" :props="props">{{ props.row.valid }}</q-td>
         <q-td key="invalid" :props="props">{{ props.row.invalid }}</q-td>
@@ -45,8 +45,8 @@ export default {
   data: () => ({
     tableData: [],
     columns: [
-      { name: 'nameFile', label: 'Nome do arquivo', field: 'nameFile', align: 'left', sortable: true },
-      { name: 'created_at', label: 'Criado', field: 'length', sortable: true },
+      { name: 'nameFile', label: '', field: 'nameFile', align: 'left', sortable: true },
+      { name: 'createdAt', label: 'Válidado em', field: 'length', sortable: true },
       { name: 'length', label: 'Quantidade', field: 'length', sortable: true },
       { name: 'valid', label: 'Válidos', field: 'valid', sortable: true },
       { name: 'invalid', label: 'Inválidos', field: 'invalid', sortable: true }
@@ -65,11 +65,11 @@ export default {
   },
   methods: {
     ...mapGetters({
-      details: 'list/details',
-      listById: 'list/selectById'
+      details: 'validations/details',
+      listById: 'validations/selectById'
     }),
     ...mapActions({
-      getList: 'list/list'
+      getList: 'validations/list'
     }),
     convertTimeStamp (timeStamp) {
       return date.formatDate(timeStamp, 'DD/MM/YY [ás] HH:mm')
@@ -94,8 +94,8 @@ export default {
   },
   computed: {
     ...mapState({
-      load: state => state.list.load,
-      list: state => state.list.list
+      load: state => state.validations.load,
+      list: state => state.validations.list
     })
   },
   watch: {
