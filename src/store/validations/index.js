@@ -47,9 +47,9 @@ export default {
   },
 
   actions: {
-    async list ({ commit }) {
+    async list ({ commit, rootState }) {
       const dbList = Firebase.firestore().collection('validations')
-      await dbList.onSnapshot(querySnapshot => {
+      await dbList.where('uid', '==', rootState.auth.user.uid).onSnapshot(querySnapshot => {
         let list = []
         querySnapshot.forEach(doc => {
           const data = doc.data()
