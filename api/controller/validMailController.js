@@ -74,6 +74,7 @@ async function listValidation ({list, user, name}) {
     listValid.push(item)
   }
   db.collection('validations').add({
+    uid: user.uid,
     user: user,
     details: details,
     valid: listValid,
