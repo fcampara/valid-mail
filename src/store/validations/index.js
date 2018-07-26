@@ -15,7 +15,7 @@ export default {
       for (let item of list) {
         details.push({
           id: item.id,
-          created_at: item.details.created_at,
+          createdAt: item.details.createdAt,
           invalid: item.details.invalid,
           valid: item.details.valid,
           nameFile: item.details.nameFile,
@@ -48,7 +48,7 @@ export default {
 
   actions: {
     async list ({ commit }) {
-      const dbList = Firebase.firestore().collection('list')
+      const dbList = Firebase.firestore().collection('validations')
       await dbList.onSnapshot(querySnapshot => {
         let list = []
         querySnapshot.forEach(doc => {
