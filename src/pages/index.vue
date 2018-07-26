@@ -72,7 +72,7 @@ export default {
       }
     },
     upload () {
-      this.$axios.post('http://localhost:5000/api/validation/list', {
+      this.$axios.post('http://valid-mail.herokuapp.com/api/validation/list', {
         user: this.user,
         name: this.file.name,
         list: this.file.data
