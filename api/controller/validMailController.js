@@ -32,11 +32,12 @@ module.exports = {
   single: async ({email}, callback) => {
     const errorE = validation.email(email)
     if (errorE) {
-      const resp = {status: 400, msg: 'Email não informado.', error: errorE}
+      const resp = {status: 400, msg: 'E-mail com formato incorreto', valid: false, error: errorE}
       return callback(resp)
     } else {
       const {sysValid} = await validationMail(email)
-      const resp = {status: 200, valid: sysValid, error: null}
+      const msg = sysValid ? `${email} é um e-mail válido` : `${email} é um e-mail inválido`
+      const resp = {status: 200, msg: msg, valid: sysValid, error: null}
       return callback(resp)
     }
   }

@@ -10,6 +10,6 @@ app.post('/api/validation/list', (req, res) => {
 app.post('/api/validation/single', (req, res) => {
   validMail.single(req.body, resp => {
     const error = resp.error ? resp.error.details : null
-    res.status(resp.status).json({valid: resp.valid, error: error})
+    res.status(resp.status).json({valid: resp.valid, msg: resp.msg, error: error})
   })
 })
