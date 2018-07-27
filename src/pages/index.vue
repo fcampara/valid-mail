@@ -1,46 +1,25 @@
 <template>
   <q-page padding>
     <q-uploader url="http://localhost:5000/valid" @add="add"/>
-
     <q-input @blur="validSingle()" v-model="email"/>
-  <!-- <FilePond
-    ref="pond"
-    class-name="my-pond"
-    label-idle="Solte seu arquivo aqui ou clique para buscar"
-    allow-multiple="false"
-    acceptedFileTypes="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    labelFileTypeNotAllowed="Arquivo inválido"
-    @addfile="add"
-  /> -->
-
   </q-page>
-
 </template>
-
-<style>
-</style>
-
 <script>
+
 import { mapGetters } from 'vuex'
-import vueFilePond from 'vue-filepond'
-import 'filepond/dist/filepond.min.css'
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
-const FilePond = vueFilePond(FilePondPluginFileValidateType)
-
+import { Alert } from '../components/alert.js'
 export default {
+  mixins: [Alert],
   name: 'PageIndex',
-
   data: () => ({
     email: '',
     url: '',
+    error: {},
     file: {
       name: '',
       data: ''
     }
   }),
-  components: {
-    FilePond
-  },
   computed: {
     ...mapGetters({
       user: 'auth/user'
@@ -51,9 +30,10 @@ export default {
       this.$axios.post('api/validation/single', {
         email: this.email
       }).then(response => {
-        console.log(response)
+        const {msg, valid} = response.data
+        valid ? this.alertSuccess(msg) : this.alertError(msg)
       }).catch((error) => {
-        console.log(error.response.data)
+        this.alertError(error.response.data.msg)
       })
     },
     add (files) {
@@ -77,9 +57,9 @@ export default {
         name: this.file.name,
         list: this.file.data
       }).then(response => {
-        console.log(response)
+        this.alertSuccess(response.data.msg)
       }).catch((error) => {
-        console.log(error.response.data)
+        this.alertError(error.response.data)
       })
     }
   }
