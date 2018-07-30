@@ -11,7 +11,7 @@ export default [
   },
 
   { // Main Routes
-    path: '/dashboard',
+    path: '/',
     component: () => import('layouts/default'),
     meta: { authRequired: true },
     children:

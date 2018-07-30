@@ -8,6 +8,7 @@
 
 import { mapGetters } from 'vuex'
 import { Alert } from '../components/alert.js'
+import XLSX from 'xlsx'
 export default {
   mixins: [Alert],
   name: 'PageIndex',
@@ -37,30 +38,30 @@ export default {
       })
     },
     add (files) {
-      const
-        csv = require('csvtojson/v2'),
-        reader = new FileReader()
-
+      console.log(XLSX)
+      const reader = new FileReader()
       this.file.name = files[0].name
       reader.readAsText(files[0])
 
       reader.onload = e => {
-        csv().fromString(e.target.result).then((jsonArray) => {
-          this.file.data = jsonArray
-          this.upload()
-        })
+        const data = e.target.result
+        const workbook = XLSX.read(data, {type: 'binary'})
+        const firstWorksheet = workbook.Sheets[workbook.SheetNames[0]]
+        const data2 = XLSX.utils.sheet_to_json(firstWorksheet, { header: 1 })
+        console.log(data2)
       }
     },
     upload () {
-      this.$axios.post('api/validation/list', {
-        user: this.user,
-        name: this.file.name,
-        list: this.file.data
-      }).then(response => {
-        this.alertSuccess(response.data.msg)
-      }).catch((error) => {
-        this.alertError(error.response.data)
-      })
+      console.log(this.file.data)
+      // this.$axios.post('api/validation/list', {
+      //   user: this.user,
+      //   name: this.file.name,
+      //   list: this.file.data
+      // }).then(response => {
+      //   this.alertSuccess(response.data.msg)
+      // }).catch((error) => {
+      //   this.alertError(error.response.data)
+      // })
     }
   }
 }
