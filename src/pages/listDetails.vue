@@ -23,8 +23,6 @@ export default {
     loading: true
   }),
   created () {
-    console.log(this.$router)
-    console.log(this.$route)
     if (this.load) {
       this.buildTable()
     } else {

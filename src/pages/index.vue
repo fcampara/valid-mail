@@ -75,14 +75,12 @@ export default {
       }
     },
     upload () {
-      console.log(this.file)
       this.$axios.post('api/validation/list', {
         user: this.user,
         file: this.file
       }).then(response => {
         this.alertSuccess(response.data.msg)
       }).catch((error) => {
-        console.log(error.response)
         this.alertError(error.response.data.msg)
       })
       this.clear()

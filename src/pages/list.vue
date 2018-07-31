@@ -77,15 +77,9 @@ export default {
     rowClick (row) {
       this.rowClicked = row.id
     },
-    edit () {
-      console.log('edit')
-    },
-    remove () {
-      console.log('remove')
-    },
-    download () {
-      console.log('download')
-    },
+    edit () {},
+    remove () {},
+    download () {},
     open () {
       const funct = this.listById()
       const row = funct(this.rowClicked)

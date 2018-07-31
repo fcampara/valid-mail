@@ -19,12 +19,7 @@ module.exports = {
       return callback(resp)
     }
 
-    callback(resp)
-    try {
-      listValidation(file, user)
-    } catch (err) {
-      console.log('erro aqui: ', err)
-    }
+    listValidation(file, user)
   },
 
   single: async ({email}, callback) => {
@@ -81,7 +76,7 @@ async function listValidation ({name, data, header}, user) {
     details: details,
     valid: listValid
   }).then().catch(err => {
-    console.log(err)
+    saveError(err)
   })
 }
 
@@ -112,11 +107,11 @@ async function validationMail (email) {
   return validation
 }
 
-// function saveError (err, user, list, listValid) {
-//   db.collection('error').add({
-//     error: err,
-//     user: user,
-//     list: list,
-//     listValid: listValid
-//   })
-// }
+function saveError (err, user, list, listValid) {
+  db.collection('error').add({
+    error: err,
+    user: user,
+    list: list,
+    listValid: listValid
+  })
+}

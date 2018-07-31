@@ -56,11 +56,6 @@ export default {
     signOut () {
       this.$store.dispatch('auth/signOut')
     }
-  },
-  watch: {
-    '$route': function (newRoute, oldRoute) {
-      console.log(newRoute)
-    }
   }
 }
 </script>
