@@ -9,9 +9,9 @@ export default [
       { path: 'sign-in', name: 'signIn', component: () => import('pages/auth/sign-in') }
     ]
   },
-
   { // Main Routes
     path: '/',
+    redirect: '/dashboard',
     component: () => import('layouts/default'),
     meta: { authRequired: true },
     children:

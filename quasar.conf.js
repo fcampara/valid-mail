@@ -45,6 +45,10 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       components: [
+        'QChip',
+        'QOptionGroup',
+        'QToggle',
+        'QDialog',
         'QPopover',
         'QSearch',
         'QSelect',
@@ -64,6 +68,7 @@ module.exports = function (ctx) {
         'QInput',
         'QItem',
         'QItemMain',
+        'QItemTile',
         'QItemSide',
         'QLayout',
         'QLayoutDrawer',
@@ -82,7 +87,7 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify', 'Dialog'
       ],
       iconSet: 'fontawesome'
     },
