@@ -53,7 +53,7 @@ export default {
         this.$router.replace({ name: 'dashboard' })
       }).catch(error => {
         this.$q.notify('Invalid Login!')
-        console.error(`Not signed in: ${error.message}`)
+        console.error(`Not signed in: ${error.message}`) // eslint-disable-line no-console
       })
     }
   }

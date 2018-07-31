@@ -58,7 +58,7 @@ export default {
         })
         commit('SET_LIST', list)
       }, err => {
-        console.log(err)
+        console.log(err)// eslint-disable-line no-console
       })
     }
   }
