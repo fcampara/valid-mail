@@ -1,14 +1,18 @@
 const Joi = require('joi')
 
 module.exports = {
-  arrayList: (list) => {
-    const schema = Joi.array().required().min(1)
+  file: (file) => {
+    const schema = Joi.object().required().keys({
+      name: Joi.string().required(),
+      data: Joi.array().min(1).required(),
+      header: Joi.array().min(1).required()
+    })
 
-    const {error} = Joi.validate(list, schema)
+    const {error} = Joi.validate(file, schema)
     return error
   },
 
-  userList: (user) => {
+  user: (user) => {
     const schema = Joi.object().required().keys({
       name: Joi.any(),
       email: Joi.any(),
@@ -17,13 +21,6 @@ module.exports = {
     })
 
     const { error } = Joi.validate(user, schema)
-    return error
-  },
-
-  nameList: (name) => {
-    const schema = Joi.string().required()
-
-    const {error} = Joi.validate(name, schema)
     return error
   },
 
