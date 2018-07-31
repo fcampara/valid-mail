@@ -4,29 +4,27 @@ const validation = require('../helper/validation.js')
 
 module.exports = {
   list: (data, callback) => {
-    const { list, user, name } = data
+    const { file, user } = data
     let resp = {status: 200, msg: 'Sua lista está sendo válidada', error: null}
 
-    const errorL = validation.arrayList(list)
+    const errorL = validation.file(file)
     if (errorL) {
-      resp = {status: 400, msg: 'É obrigatório enviar uma lista para ser válidado.', error: errorL}
+      resp = {status: 400, msg: 'Está faltando alguma informação do arquivo, tente novamente', error: errorL}
       return callback(resp)
     }
 
-    const errorU = validation.userList(user)
+    const errorU = validation.user(user)
     if (errorU) {
       resp = {status: 400, msg: 'Usuário não informado.', error: errorU}
       return callback(resp)
     }
 
-    const errorN = validation.nameList(name)
-    if (errorN) {
-      resp = {status: 400, msg: 'Nome do arquivo não informado.', error: errorN}
-      return callback(resp)
-    }
-
     callback(resp)
-    listValidation({list, user, name})
+    try {
+      listValidation(file, user)
+    } catch (err) {
+      console.log('erro aqui: ', err)
+    }
   },
 
   single: async ({email}, callback) => {
@@ -43,45 +41,47 @@ module.exports = {
   }
 }
 
-async function listValidation ({list, user, name}) {
-  let keys = ['sysInfo', 'sysValid']
-  for (let k in list[0]) keys.push(k)
-
+async function listValidation ({name, data, header}, user) {
+  header.unshift('sysInfo', 'sysValid')
   let
-    listValid = [],
+    listValid = {data: [], header: header},
     details = {
       createdAt: Date.now(),
       nameFile: name,
-      length: list.length,
+      length: data.length,
       invalid: 0,
       valid: 0,
-      keys: keys
+      seconds: 0
     }
-
-  for (let item of list) {
-    let array = Object.values(item)
-    let email = array.find((element) => {
-      if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) {
-        return element
-      }
+  const begin = Date.now()
+  for (let item of data) {
+    let email = item.find(element => {
+      if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
     })
 
     let {valid, invalid, sysInfo, sysValid} = await validationMail(email)
     details.valid += valid
     details.invalid += invalid
-    item.sysInfo = sysInfo
-    item.sysValid = sysValid
+    item.unshift(sysInfo, sysValid)
 
-    listValid.push(item)
+    let newItem = {}
+    for (let value of item.entries()) {
+      const header = listValid.header[value[0]]
+      newItem[header] = value[1]
+    }
+
+    listValid.data.push(newItem)
   }
+  const end = Date.now()
+
+  details.seconds = (end - begin) * 0.001
   db.collection('validations').add({
     uid: user.uid,
     user: user,
     details: details,
-    valid: listValid,
-    beforeValid: list
+    valid: listValid
   }).then().catch(err => {
-    saveError(err, user, list, listValid)
+    console.log(err)
   })
 }
 
@@ -97,7 +97,7 @@ async function validationMail (email) {
       verifier.verify(email, (err, info) => {
         result.sysValid = info.success
         info.success ? result.valid++ : result.invalid++
-        const error = err ? `Inválido: ${err}` : ''
+        const error = err ? `Inválido: ${err}` : 'Ok'
         result.sysInfo = error
         resolve(result)
       })
@@ -112,11 +112,11 @@ async function validationMail (email) {
   return validation
 }
 
-function saveError (err, user, list, listValid) {
-  db.collection('error').add({
-    error: err,
-    user: user,
-    list: list,
-    listValid: listValid
-  })
-}
+// function saveError (err, user, list, listValid) {
+//   db.collection('error').add({
+//     error: err,
+//     user: user,
+//     list: list,
+//     listValid: listValid
+//   })
+// }

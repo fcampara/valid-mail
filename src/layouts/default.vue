@@ -9,7 +9,7 @@
         </q-btn>
 
         <q-toolbar-title>
-          Quasar Firebase Example
+          {{$route.name}}
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
@@ -43,7 +43,9 @@
 </template>
 
 <script>
+import { Alert } from '../components/alert.js'
 export default {
+  mixins: [Alert],
   name: 'LayoutDefault',
   data () {
     return {
@@ -53,6 +55,11 @@ export default {
   methods: {
     signOut () {
       this.$store.dispatch('auth/signOut')
+    }
+  },
+  watch: {
+    '$route': function (newRoute, oldRoute) {
+      console.log(newRoute)
     }
   }
 }
