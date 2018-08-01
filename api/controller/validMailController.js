@@ -20,6 +20,7 @@ module.exports = {
     }
 
     listValidation(file, user)
+    return callback(resp)
   },
 
   single: async ({email}, callback) => {
@@ -51,9 +52,10 @@ async function listValidation ({name, data, header}, user) {
   const begin = Date.now()
   for (let item of data) {
     let email = item.find(element => {
-      if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
+      if (element) {
+        if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
+      }
     })
-
     let {valid, invalid, sysInfo, sysValid} = await validationMail(email)
     details.valid += valid
     details.invalid += invalid
