@@ -1,16 +1,19 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr fFf">
     <q-layout-header>
-      <q-toolbar color="primary">
+      <q-toolbar color="deep-purple-5" style="height: 55px">
         <q-btn flat dense round aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         >
           <q-icon name="menu" />
         </q-btn>
+        <img src="~assets/logo/kong.png" width="66px">
 
         <q-toolbar-title>
-          {{$route.name}}
+          Kong mailler
+          <span slot="subtitle">Header Subtitle</span>
         </q-toolbar-title>
+        <q-input inverted-light color="purple-1" style="width: 300px" class="absolute-center" align="center" v-model="email" :before="[{icon: 'mail', handler () {}}]" placeholder="Válidar email" type="email"/>
       </q-toolbar>
     </q-layout-header>
 
@@ -37,7 +40,9 @@
     </q-layout-drawer>
 
     <q-page-container>
-      <router-view />
+      <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in">
+        <router-view />
+      </transition>
     </q-page-container>
   </q-layout>
 </template>
@@ -49,6 +54,8 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
+      email: '',
+      heighHeader: 700,
       leftDrawerOpen: true
     }
   },

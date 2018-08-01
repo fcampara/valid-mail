@@ -87,12 +87,13 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
-        'Notify', 'Dialog'
+        'Notify', 'Dialog', 'AddressbarColor'
       ],
       iconSet: 'fontawesome'
     },
     // animations: 'all' --- includes all animations
     animations: [
+      'fadeIn', 'fadeOut'
     ],
     pwa: {
       // workboxPluginMode: 'InjectManifest',
