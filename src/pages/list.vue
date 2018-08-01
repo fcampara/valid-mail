@@ -38,6 +38,7 @@
     </q-table>
 </template>
 <script>
+import XLSX from 'xlsx'
 import { date } from 'quasar'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
@@ -79,7 +80,31 @@ export default {
     },
     edit () {},
     remove () {},
-    download () {},
+    download () {
+      const funct = this.listById()
+      const row = funct(this.rowClicked)
+      let wb = XLSX.utils.book_new()
+      wb.Props = {
+        Title: 'Teste',
+        Subject: 'Teste 2',
+        Author: 'Kong Mailler',
+        CreatedDate: new Date(2017, 12, 19)
+      }
+      wb.SheetNames.push('Teste Sheets')
+      const ws = XLSX.utils.json_to_sheet(row.valid.data)
+      wb.Sheets['Teste Sheets'] = ws
+
+      const wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'})
+
+      const FileSaver = require('file-saver')
+      FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+    },
+    s2ab (s) {
+      let buf = new ArrayBuffer(s.length)
+      let view = new Uint8Array(buf)
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF
+      return buf
+    },
     open () {
       const funct = this.listById()
       const row = funct(this.rowClicked)

@@ -56,6 +56,7 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
+    console.log(email)
     let {valid, invalid, sysInfo, sysValid} = await validationMail(email)
     details.valid += valid
     details.invalid += invalid
