@@ -27,16 +27,12 @@
 import { mapGetters } from 'vuex'
 import { Alert } from '../components/alert.js'
 import XLSX from 'xlsx'
-/*
-Function on components alerts.js:
-alertError, alertSucess
 
-Function on components globalFunctions.js:
-*/
 export default {
   mixins: [Alert],
   name: 'PageIndex',
   data: () => ({
+    messages: [],
     email: '',
     dialog: false,
     file: {
@@ -102,6 +98,16 @@ export default {
         header: []
       }
     }
+  },
+  created () {
+    const io = require('socket.io-client')
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://valid-mail.herokuapp.com'
+    const socket = io.connect(url)
+
+    socket.on('validMail', function (message) {
+      this.messages.push(message)
+      console.log(this.messages) // eslint-disable-line
+    }.bind(this))
   }
 }
 </script>

@@ -29,5 +29,26 @@ module.exports = {
 
     const {error} = Joi.validate(email, schema)
     return error
+  },
+  verifyCode: (code) => {
+    switch (code) {
+      case 1:
+        return 'Verificação finalizada'
+
+      case 2:
+        return 'Formato de e-mail inválido'
+
+      case 3:
+        return 'Não existe servidor de e-mail neste domínio'
+
+      case 4:
+        return 'Tempo excedido'
+
+      case 5:
+        return 'Domínio inválido'
+
+      case 6:
+        return 'Falha em se comunicar com o servido do domínio'
+    }
   }
 }
