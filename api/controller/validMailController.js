@@ -83,14 +83,14 @@ async function listValidation ({name, data, header}, user) {
   })
   const end = Date.now()
   details.seconds = (end - begin) * 0.001
-  // db.collection('validations').add({
-  //   uid: user.uid,
-  //   user: user,
-  //   details: details,
-  //   valid: listValid
-  // }).then().catch(err => {
-  //   saveError(err)
-  // })
+  db.collection('validations').add({
+    uid: user.uid,
+    user: user,
+    details: details,
+    valid: listValid
+  }).then().catch(err => {
+    saveError(err)
+  })
 }
 
 async function validationMail (email) {
@@ -108,11 +108,11 @@ async function validationMail (email) {
   return verifierMail
 }
 
-// function saveError (err, user, list, listValid) {
-//   db.collection('error').add({
-//     error: err,
-//     user: user,
-//     list: list,
-//     listValid: listValid
-//   })
-// }
+function saveError (err, user, list, listValid) {
+  db.collection('error').add({
+    error: err,
+    user: user,
+    list: list,
+    listValid: listValid
+  })
+}
