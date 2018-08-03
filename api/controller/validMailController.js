@@ -2,6 +2,11 @@ const verifier = require('email-verify')
 const db = require('../config/db.conf')
 const validation = require('../helper/validation.js')
 
+const app = require('../config/app.conf.js')
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+server.listen(3000)
+
 module.exports = {
   list: (data, callback) => {
     const { file, user } = data
@@ -38,6 +43,9 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
+  io.on('connection', (socket) => {
+    socket.emit('validMail', 'Lista')
+  })
   header.unshift('sysInfo', 'sysValid')
   let
     listValid = {data: [], header: header},
@@ -56,7 +64,6 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    console.log(email)
     let {valid, invalid, sysInfo, sysValid} = await validationMail(email)
     details.valid += valid
     details.invalid += invalid
@@ -70,51 +77,42 @@ async function listValidation ({name, data, header}, user) {
 
     listValid.data.push(newItem)
   }
-  const end = Date.now()
-
-  details.seconds = (end - begin) * 0.001
-  db.collection('validations').add({
-    uid: user.uid,
-    user: user,
-    details: details,
-    valid: listValid
-  }).then().catch(err => {
-    saveError(err)
+  io.of('validMail').clients((error, socketIds) => {
+    if (error) throw error
+    socketIds.forEach(socketId => io.of('/').adapter.remoteLeave(socketId, 'validMail'))
   })
+  const end = Date.now()
+  details.seconds = (end - begin) * 0.001
+  // db.collection('validations').add({
+  //   uid: user.uid,
+  //   user: user,
+  //   details: details,
+  //   valid: listValid
+  // }).then().catch(err => {
+  //   saveError(err)
+  // })
 }
 
 async function validationMail (email) {
-  let validation = await new Promise(resolve => {
-    let result = {
-      sysValid: '',
-      sysInfo: '',
-      invalid: 0,
-      valid: 0
-    }
+  let verifierMail = await new Promise(resolve => {
     if (email) {
-      verifier.verify(email, (err, info) => {
-        result.sysValid = info.success
-        info.success ? result.valid++ : result.invalid++
-        const error = err ? `Inválido: ${err}` : 'Ok'
-        result.sysInfo = error
-        resolve(result)
+      verifier.verify(email,{timeout: 60000}, (err, info) => { // eslint-disable-line
+        resolve({ invalid: 0, valid: 1, sysValid: info.success, sysInfo: info.code })
       })
     } else {
-      result.invalid++
-      result.sysValid = false
-      result.sysInfo = 'Formato de e-mail inválido'
-      resolve(result)
+      resolve({ invalid: 1, valid: 0, sysValid: false, sysInfo: 2 })
     }
   })
-
-  return validation
+  verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
+  io.emit('validMail', {info: verifierMail, email: email})
+  return verifierMail
 }
 
-function saveError (err, user, list, listValid) {
-  db.collection('error').add({
-    error: err,
-    user: user,
-    list: list,
-    listValid: listValid
-  })
-}
+// function saveError (err, user, list, listValid) {
+//   db.collection('error').add({
+//     error: err,
+//     user: user,
+//     list: list,
+//     listValid: listValid
+//   })
+// }
