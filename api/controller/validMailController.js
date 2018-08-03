@@ -5,6 +5,8 @@ const validation = require('../helper/validation.js')
 const app = require('../config/app.conf.js')
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
+io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
+
 server.listen(3000)
 
 module.exports = {
@@ -77,10 +79,6 @@ async function listValidation ({name, data, header}, user) {
 
     listValid.data.push(newItem)
   }
-  io.of('validMail').clients((error, socketIds) => {
-    if (error) throw error
-    socketIds.forEach(socketId => io.of('/').adapter.remoteLeave(socketId, 'validMail'))
-  })
   const end = Date.now()
   details.seconds = (end - begin) * 0.001
   db.collection('validations').add({
@@ -104,6 +102,7 @@ async function validationMail (email) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
+  console.log(verifierMail) // eslint-disable-line
   io.emit('validMail', {info: verifierMail, email: email})
   return verifierMail
 }
