@@ -5,7 +5,11 @@ const history = require('connect-history-api-fallback')
 const path = require('path')
 
 const port = process.env.PORT || 5000
-const app = module.exports = express()
+const app = express()
+
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 
 const allowCors = (req, res, next) => {
   const allowedOrigins = ['http://localhost:8080', 'http://valid-mail.herokuapp.com', 'https://valid-mail.herokuapp.com']
@@ -20,7 +24,15 @@ const allowCors = (req, res, next) => {
   next()
 }
 
-app.listen(port)
+app.get('/test', (req, res) => {
+  res.status(200).json('Teste');
+});
+
+io.on('connection', (socket) => {
+  console.log('Connection', socket);
+  socket.emit('validMail', 'Lista')
+})
+
 app.use(allowCors)
 app.use(bodyParser.json({
   limit: '50mb'
@@ -32,3 +44,11 @@ app.use(bodyParser.urlencoded({
 
 app.use(history())
 app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
+
+server.listen(port)
+
+
+module.exports = {
+  app,
+  io
+}

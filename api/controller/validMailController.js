@@ -2,12 +2,7 @@ const verifier = require('email-verify')
 const db = require('../config/db.conf')
 const validation = require('../helper/validation.js')
 
-const app = require('../config/app.conf.js')
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
-io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
-
-server.listen(3000)
+const { socket } = require('../config/app.conf.js')
 
 module.exports = {
   list: (data, callback) => {

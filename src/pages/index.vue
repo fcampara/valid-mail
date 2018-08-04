@@ -101,7 +101,7 @@ export default {
   },
   created () {
     const io = require('socket.io-client')
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://valid-mail.herokuapp.com:3000'
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'http://valid-mail.herokuapp.com:3000'
     const socket = io.connect(url)
 
     socket.on('validMail', function (message) {
