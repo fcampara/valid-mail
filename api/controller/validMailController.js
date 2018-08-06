@@ -2,12 +2,7 @@ const verifier = require('email-verify')
 const db = require('../config/db.conf')
 const validation = require('../helper/validation.js')
 
-const app = require('../config/app.conf.js')
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
-io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
-
-server.listen(3000)
+const { socket } = require('../config/app.conf.js')
 
 module.exports = {
   list: (data, callback) => {
@@ -45,6 +40,7 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
+  let cont = 0
   io.on('connection', (socket) => {
     socket.emit('validMail', 'Lista')
   })
@@ -61,12 +57,13 @@ async function listValidation ({name, data, header}, user) {
     }
   const begin = Date.now()
   for (let item of data) {
+    cont++
     let email = item.find(element => {
       if (element) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    let {valid, invalid, sysInfo, sysValid} = await validationMail(email)
+    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)
@@ -91,7 +88,7 @@ async function listValidation ({name, data, header}, user) {
   })
 }
 
-async function validationMail (email) {
+async function validationMail (email, cont) {
   let verifierMail = await new Promise(resolve => {
     if (email) {
       verifier.verify(email,{timeout: 60000}, (err, info) => { // eslint-disable-line
@@ -102,7 +99,7 @@ async function validationMail (email) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  console.log(verifierMail) // eslint-disable-line
+  console.log(verifierMail, email, cont) // eslint-disable-line
   io.emit('validMail', {info: verifierMail, email: email})
   return verifierMail
 }

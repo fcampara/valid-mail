@@ -1,5 +1,5 @@
 const validMail = require('../api/controller/validMailController.js')
-const app = require('../api/config/app.conf.js')
+const { app } = require('../api/config/app.conf.js')
 
 app.post('/api/validation/list', (req, res) => {
   validMail.list(req.body, resp => {
