@@ -7,9 +7,13 @@ const path = require('path')
 const port = process.env.PORT || 5000
 const app = express()
 
+// Socket-io
+const validMailSocket = require('../socket.io/validMail')
+
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
-io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
+app.io = require('socket.io')(server)
+app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
+validMailSocket.start(app.io)
 
 const allowCors = (req, res, next) => {
   const allowedOrigins = ['http://localhost:8080', 'http://valid-mail.herokuapp.com', 'https://valid-mail.herokuapp.com']
@@ -24,21 +28,13 @@ const allowCors = (req, res, next) => {
   next()
 }
 
-app.get('/test', (req, res) => {
-  res.status(200).json('Teste');
-});
-
-io.on('connection', (socket) => {
-  console.log('Connection', socket);
-  socket.emit('validMail', 'Lista')
-})
-
 app.use(allowCors)
 app.use(bodyParser.json({
-  limit: '50mb'
+  limit: 1000000,
+  type: 'application/json'
 }))
 app.use(bodyParser.urlencoded({
-  limit: '50mb',
+  limit: 1000000,
   extended: true
 }))
 
@@ -47,8 +43,6 @@ app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
 
 server.listen(port)
 
-
 module.exports = {
-  app,
-  io
+  app
 }
