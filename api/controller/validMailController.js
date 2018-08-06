@@ -1,8 +1,7 @@
+const validation = require('../helper/validation.js')
 const verifier = require('email-verify')
 const db = require('../config/db.conf')
-const validation = require('../helper/validation.js')
-
-const { socket } = require('../config/app.conf.js')
+const validMailSocket = require('../socket.io/validMail')
 
 module.exports = {
   list: (data, callback) => {
@@ -40,10 +39,8 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
+  const { socketId } = validMailSocket.getUserById(user.uid)
   let cont = 0
-  io.on('connection', (socket) => {
-    socket.emit('validMail', 'Lista')
-  })
   header.unshift('sysInfo', 'sysValid')
   let
     listValid = {data: [], header: header},
@@ -63,7 +60,7 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont)
+    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont, socketId)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)
@@ -88,7 +85,7 @@ async function listValidation ({name, data, header}, user) {
   })
 }
 
-async function validationMail (email, cont) {
+async function validationMail (email, cont, socketId) {
   let verifierMail = await new Promise(resolve => {
     if (email) {
       verifier.verify(email,{timeout: 60000}, (err, info) => { // eslint-disable-line
@@ -99,8 +96,8 @@ async function validationMail (email, cont) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
+  validMailSocket.broadCast(socketId, {info: verifierMail, email: email})
   console.log(verifierMail, email, cont) // eslint-disable-line
-  io.emit('validMail', {info: verifierMail, email: email})
   return verifierMail
 }
 
