@@ -107,9 +107,8 @@ export default {
     this.user.name = 'Felipe'
     socket.emit('setUser', this.user)
     socket.on('message', function (message) {
-      console.log(message)
-      // this.messages.push(message)
-      // console.log(this.messages) // eslint-disable-line
+      this.messages.push(message)
+      console.log(this.messages) // eslint-disable-line
     })
   }
 }
