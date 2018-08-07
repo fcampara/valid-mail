@@ -40,8 +40,8 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
-  console.log(app.io)
-  const { socketId } = validMailSocket.getUserById(user.uid)
+  // console.log(app.io)
+  // const { socketId } = validMailSocket.getUserById(user.uid)
   let cont = 0
   header.unshift('sysInfo', 'sysValid')
   let
@@ -98,7 +98,7 @@ async function validationMail (email, cont, socketId) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  app.io.of('/validMail').to(socketId).emit('message', {info: verifierMail, email: email})
+  // app.io.of('/validMail').to(socketId).emit('message', {info: verifierMail, email: email})
   console.log(verifierMail, email, cont) // eslint-disable-line
   return verifierMail
 }
