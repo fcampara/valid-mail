@@ -16,7 +16,7 @@ app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 validMailSocket.start(app.io)
 
 const allowCors = (req, res, next) => {
-  const allowedOrigins = ['http://localhost:8080', 'http://valid-mail.herokuapp.com', 'https://valid-mail.herokuapp.com']
+  const allowedOrigins = ['http://localhost:8080', 'http://valid-mail.herokuapp.com']
   const origin = req.headers.origin
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin)
