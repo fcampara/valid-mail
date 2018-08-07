@@ -1,6 +1,7 @@
 const validation = require('../helper/validation.js')
 const verifier = require('email-verify')
 const db = require('../config/db.conf')
+const { app } = require('../config/app.conf')
 const validMailSocket = require('../socket.io/validMail')
 
 module.exports = {
@@ -39,6 +40,7 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
+  console.log(app.io)
   const { socketId } = validMailSocket.getUserById(user.uid)
   let cont = 0
   header.unshift('sysInfo', 'sysValid')
@@ -96,7 +98,7 @@ async function validationMail (email, cont, socketId) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  validMailSocket.broadCast(socketId, {info: verifierMail, email: email})
+  app.io.of('/validMail').to(socketId).emit('message', {info: verifierMail, email: email})
   console.log(verifierMail, email, cont) // eslint-disable-line
   return verifierMail
 }

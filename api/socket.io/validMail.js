@@ -1,24 +1,18 @@
 let connectedUsers = []
-let socketIo = {}
 module.exports = {
   start: (io) => {
-    io.of('/validMail').on('connect', onConnect)
-  },
-  broadCast: (socketId, msg) => {
-    socketIo.broadcast.to(socketId).emit('message', msg)
+    io.of('/validMail').on('connect', (socket) => {
+      socket.on('setUser', (user) => {
+        console.log(socket.id)
+        connectedUsers.push({
+          uid: user.uid,
+          name: user.name,
+          socketId: socket.id
+        })
+      })
+    })
   },
   getUserById: (id) => {
     return connectedUsers.find(user => user.uid === id)
   }
-}
-
-function onConnect (socket) {
-  socketIo = socket
-  socketIo.on('setUser', (user) => {
-    connectedUsers.push({
-      uid: user.uid,
-      name: user.name,
-      socketId: socketIo.id
-    })
-  })
 }
