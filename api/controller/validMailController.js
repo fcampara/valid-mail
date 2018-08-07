@@ -1,8 +1,8 @@
 const validation = require('../helper/validation.js')
 const verifier = require('email-verify')
 const db = require('../config/db.conf')
-const { app } = require('../config/app.conf')
-const validMailSocket = require('../socket.io/validMail')
+// const { app } = require('../config/app.conf')
+// const validMailSocket = require('../socket.io/validMail')
 
 module.exports = {
   list: (data, callback) => {
@@ -62,7 +62,7 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont, socketId)
+    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)

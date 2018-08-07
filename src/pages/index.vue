@@ -100,16 +100,16 @@ export default {
     }
   },
   created () {
-    const io = require('socket.io-client')
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
-    const socket = io.connect(url)
+    // const io = require('socket.io-client')
+    // const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
+    // const socket = io.connect(url)
 
-    this.user.name = 'Felipe'
-    socket.emit('setUser', this.user)
-    socket.on('message', function (message) {
-      this.messages.push(message)
-      console.log(this.messages) // eslint-disable-line
-    })
+    // this.user.name = 'Felipe'
+    // socket.emit('setUser', this.user)
+    // socket.on('message', function (message) {
+    //   this.messages.push(message)
+    //   console.log(this.messages) // eslint-disable-line
+    // })
   }
 }
 </script>
