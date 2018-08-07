@@ -1,8 +1,8 @@
 const validation = require('../helper/validation.js')
 const verifier = require('email-verify')
 const db = require('../config/db.conf')
-// const { app } = require('../config/app.conf')
-// const validMailSocket = require('../socket.io/validMail')
+const { app } = require('../config/app.conf')
+const validMailSocket = require('../socket.io/validMail')
 
 module.exports = {
   list: (data, callback) => {
@@ -41,7 +41,6 @@ module.exports = {
 
 async function listValidation ({name, data, header}, user) {
   // console.log(app.io)
-  // const { socketId } = validMailSocket.getUserById(user.uid)
   let cont = 0
   header.unshift('sysInfo', 'sysValid')
   let
@@ -62,7 +61,7 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont)
+    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont, user.uid)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)
@@ -87,18 +86,23 @@ async function listValidation ({name, data, header}, user) {
   })
 }
 
-async function validationMail (email, cont, socketId) {
+async function validationMail (email, cont, uid) {
+  const socket = validMailSocket.getUserById(uid)
   let verifierMail = await new Promise(resolve => {
     if (email) {
-      verifier.verify(email,{timeout: 60000}, (err, info) => { // eslint-disable-line
-        resolve({ invalid: 0, valid: 1, sysValid: info.success, sysInfo: info.code })
+      verifier.verify(email,{timeout: 30000}, (err, info) => { // eslint-disable-line
+        let valid = 0, invalid = 0
+        info.success ? valid++ : invalid++
+        resolve({ invalid: invalid, valid: valid, sysValid: info.success, sysInfo: info.code })
       })
     } else {
       resolve({ invalid: 1, valid: 0, sysValid: false, sysInfo: 2 })
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  // app.io.of('/validMail').to(socketId).emit('message', {info: verifierMail, email: email})
+  if (socket) {
+    app.io.of('/validMail').to(socket.socketId).emit('message', {info: verifierMail, email: email})
+  }
   console.log(verifierMail, email, cont) // eslint-disable-line
   return verifierMail
 }
