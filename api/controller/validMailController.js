@@ -101,7 +101,7 @@ async function validationMail (email, cont, uid) {
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
   if (socket) {
-    app.io.of('/validMail').to(socket.socketId).emit('message', {info: verifierMail, email: email})
+    app.io.to(socket.socketId).emit('message', {info: verifierMail, email: email})
   }
   console.log(verifierMail, email, cont) // eslint-disable-line
   return verifierMail

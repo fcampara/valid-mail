@@ -1,7 +1,7 @@
 let connectedUsers = []
 module.exports = {
   start: (io) => {
-    io.of('/validMail').on('connect', (socket) => {
+    io.on('connect', (socket) => {
       socket.on('setUser', (user) => {
         console.log('setUser: ', user) // eslint-disable-line
         connectedUsers.push({
