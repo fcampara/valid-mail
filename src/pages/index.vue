@@ -12,7 +12,6 @@
           <div v-for="(header, index) in file.data[0]" :key="index">
             <span>{{header}}</span>
           </div>
-
         </div>
 
         <template slot="buttons" slot-scope="props">
@@ -101,7 +100,7 @@ export default {
   },
   created () {
     const io = require('socket.io-client')
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com'
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
     const socket = io.connect(url)
 
     this.user.name = 'Felipe'

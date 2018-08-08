@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({
 app.use(history())
 app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
 
-server.listen(port)
+server.listen(port, () => console.log(`Listening on ${port}`)) // eslint-disable-line
 
 module.exports = {
   app

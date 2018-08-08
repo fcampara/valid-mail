@@ -1,12 +1,13 @@
 {
-  "name": "quasar-firebase-example",
+  "name": "Kong Mailer",
   "version": "1.0.0",
   "description": "A Quasar / Vue reference app that connects to Firebase.",
   "productName": "Quasar with Firebase Example",
   "cordovaId": "org.cordova.quasar.app",
-  "author": "Felipe Camapra Silva <fcamparasilva@gmail.com>",
+  "author": "Felipe Campara Silva <fcamparasilva@gmail.com>",
   "private": true,
   "scripts": {
+    "node": "nodemon api/app.js",
     "build": "quasar build -m pwa",
     "start": "node api/app.js",
     "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build",

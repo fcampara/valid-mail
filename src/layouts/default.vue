@@ -10,7 +10,7 @@
         <img src="~assets/logo/kong.png" width="66px">
 
         <q-toolbar-title>
-          Kong mailler
+          Kong Mailer
           <span slot="subtitle">Header Subtitle</span>
         </q-toolbar-title>
         <q-input inverted-light color="purple-1" style="width: 300px" class="absolute-center" align="center" v-model="email" :before="[{icon: 'mail', handler () {}}]" placeholder="Válidar email" type="email"/>

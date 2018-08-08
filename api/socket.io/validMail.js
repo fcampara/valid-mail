@@ -3,6 +3,7 @@ module.exports = {
   start: (io) => {
     io.of('/validMail').on('connect', (socket) => {
       socket.on('setUser', (user) => {
+        console.log('setUser: ', user) // eslint-disable-line
         connectedUsers.push({
           uid: user.uid,
           name: user.name,
@@ -10,6 +11,7 @@ module.exports = {
         })
       })
       socket.on('disconnect', () => {
+        console.log('Disconnect') // eslint-disable-line
         const index = connectedUsers.findIndex(user => user.socketId === socket.id)
         if (index > -1) connectedUsers.splice(index, 1)
       })
