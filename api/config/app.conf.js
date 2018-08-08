@@ -10,7 +10,7 @@ const app = express()
 // Socket-io
 const validMailSocket = require('../socket.io/validMail')
 
-const server = require('http').createServer(app)
+const server = require('http').Server(app)
 app.io = require('socket.io')(server)
 app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 validMailSocket.start(app.io)

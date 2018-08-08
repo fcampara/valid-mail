@@ -100,8 +100,8 @@ export default {
   },
   created () {
     const io = require('socket.io-client')
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com:80/validMail`
-    console.log('Create url') // eslint-disable-line
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `${process.env.APP_URL}/validMail`
+    console.log(process.env) // eslint-disable-line
     const socket = io.connect(url)
 
     this.user.name = 'Felipe'
