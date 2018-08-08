@@ -1,5 +1,5 @@
 {
-  "name": "Kong Mailer",
+  "name": "kong-mailer",
   "version": "1.0.0",
   "description": "A Quasar / Vue reference app that connects to Firebase.",
   "productName": "Quasar with Firebase Example",
