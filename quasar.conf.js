@@ -45,6 +45,8 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       components: [
+        'QBtnGroup',
+        'QPageSticky',
         'QChip',
         'QOptionGroup',
         'QToggle',
@@ -87,7 +89,7 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
-        'Notify', 'Dialog', 'AddressbarColor'
+        'Notify', 'Dialog', 'AddressbarColor', 'Loading'
       ],
       iconSet: 'fontawesome'
     },

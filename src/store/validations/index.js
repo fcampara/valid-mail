@@ -1,10 +1,11 @@
 import Firebase from 'firebase/app'
 // import _ from 'lodash'
+
 export default {
   namespaced: true,
 
   state: {
-    list: {},
+    list: [],
     load: false
   },
 
@@ -60,6 +61,17 @@ export default {
       }, err => {
         console.log(err)// eslint-disable-line no-console
       })
+    },
+    async put ({commit}, payload) {
+      const dbList = Firebase.firestore().collection('validations')
+      const resp = new Promise((resolve, reject) => {
+        dbList.doc(payload).delete().then((resp) => {
+          resolve('Deleteado com sucesso')
+        }).catch(err => {
+          reject(err)
+        })
+      })
+      return resp
     }
   }
 }

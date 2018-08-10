@@ -40,7 +40,6 @@ module.exports = {
 }
 
 async function listValidation ({name, data, header}, user) {
-  // console.log(app.io)
   let cont = 0
   header.unshift('sysInfo', 'sysValid')
   let

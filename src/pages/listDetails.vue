@@ -11,7 +11,7 @@
     </q-table>
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'abcs',
   data: () => ({
@@ -22,12 +22,8 @@ export default {
     columns: [],
     loading: true
   }),
-  created () {
-    if (this.load) {
-      this.buildTable()
-    } else {
-      this.getList()
-    }
+  mounted () {
+    this.buildTable()
   },
   computed: {
     ...mapState({
@@ -35,20 +31,19 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      getList: 'validations/list'
-    }),
     ...mapGetters({
       listById: 'validations/selectById'
     }),
     buildTable () {
       const funct = this.listById()
       const list = funct(this.$route.params.id)
-      this.$options.name = list.details.nameFile
-      this.time = list.details.seconds
-      this.buildColumns(list.valid.header)
-      this.buildDataValid(list.valid.data)
-      this.loading = false
+      if (list) {
+        this.$options.name = list.details.nameFile
+        this.time = list.details.seconds
+        this.buildColumns(list.valid.header)
+        this.buildDataValid(list.valid.data)
+        this.loading = false
+      }
     },
     buildColumns (keys) {
       let col = []

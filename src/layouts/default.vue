@@ -2,23 +2,22 @@
   <q-layout view="hHh Lpr fFf">
     <q-layout-header>
       <q-toolbar color="deep-purple-5" style="height: 55px">
-        <q-btn flat dense round aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        >
+        <q-btn flat dense round aria-label="Menu" @click="left = !left">
           <q-icon name="menu" />
         </q-btn>
-        <img src="~assets/logo/kong.png" width="66px">
-
         <q-toolbar-title>
           Kong Mailer
           <span slot="subtitle">Header Subtitle</span>
         </q-toolbar-title>
-        <q-input inverted-light color="purple-1" style="width: 300px" class="absolute-center" align="center" v-model="email" :before="[{icon: 'mail', handler () {}}]" placeholder="Válidar email" type="email"/>
+        <input-valid/>
+          <q-btn flat round dense icon="notifications" @click="right = !right" >
+          <q-chip v-if="messages.length > 0" floating color="red">{{messages.length}}</q-chip>
+        </q-btn>
       </q-toolbar>
     </q-layout-header>
 
     <q-layout-drawer
-      v-model="leftDrawerOpen"
+      v-model="left"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
       <q-list no-border link inset-delimiter >
@@ -39,33 +38,95 @@
       </q-list>
     </q-layout-drawer>
 
+    <q-layout-drawer id="timeline" side="right" v-model="right" content-class="bg-grey-3">
+      <q-list-header>
+        Timeline
+        <q-btn label="Limpar" color="amber" icon="fa fa-trash" class="float-right" @click="clearMessages()"/>
+      </q-list-header>
+      <div style="padding: 25px 16px 16px;">
+        <p class="caption" v-for="n in messages" :key="`${n.email}-${messages.lenght}`">
+          <em class="ellipsis"><q-icon :color="n.info.sysValid ? 'positive' : 'negative'" :name="n.info.sysValid ? 'thumb_up' : 'thumb_down'" /> {{n.email}}</em>
+        </p>
+      </div>
+    </q-layout-drawer>
+
     <q-page-container>
-      <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in">
+      <!-- <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in"> -->
         <router-view />
-      </transition>
+      <!-- </transition> -->
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { Alert } from '../components/alert.js'
+import ValidSingle from '../components/validSingle.vue'
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
-  mixins: [Alert],
   name: 'LayoutDefault',
   data () {
     return {
-      email: '',
-      heighHeader: 700,
-      leftDrawerOpen: true
+      messages: [],
+      left: true,
+      right: false
     }
   },
+  components: {
+    'input-valid': ValidSingle
+  },
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    }),
+    ...mapState({
+      load: state => state.validations.load,
+      list: state => state.validations.list
+    })
+  },
   methods: {
+    ...mapActions({
+      getList: 'validations/list'
+    }),
+    loadList () {
+      if (this.load === false) {
+        this.$q.loading.show({message: 'Carregando sua lista de email'})
+        this.getList()
+      }
+    },
     signOut () {
       this.$store.dispatch('auth/signOut')
+    },
+    clearMessages () {
+      this.messages = []
     }
+  },
+  watch: {
+    load (newValue) {
+      this.$q.loading.hide()
+    }
+  },
+  created () {
+    this.loadList()
+    const io = require('socket.io-client')
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com/validMail`
+    const socket = io.connect(url)
+
+    this.user.name = 'Felipe'
+    socket.emit('setUser', this.user)
+    socket.on('message', (message) => {
+      if (message.email) this.messages.push(message)
+      console.log(this.messages) // eslint-disable-line
+    })
   }
 }
 </script>
 
 <style>
+.input-single {
+    width: 25%
+  }
+@media (max-width: 568px) {
+  .input-single {
+    width: 73%
+  }
+}
 </style>

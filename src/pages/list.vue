@@ -20,9 +20,6 @@
         <q-td key="invalid" :props="props">{{ props.row.invalid }}</q-td>
         <q-popover touch-position>
           <div class="group" style="text-align: center;">
-            <q-btn flat color="warning" v-close-overlay @click="edit()">
-              <q-icon name="fa fa-edit"/>
-            </q-btn>
             <q-btn flat color="negative" v-close-overlay @click="remove()">
               <q-icon name="fa fa-trash"/>
             </q-btn>
@@ -41,7 +38,10 @@
 import XLSX from 'xlsx'
 import { date } from 'quasar'
 import { mapGetters, mapState, mapActions } from 'vuex'
+import { Alert } from '../components/alert'
+
 export default {
+  mixins: [Alert],
   name: 'ListPage',
   data: () => ({
     tableData: [],
@@ -57,12 +57,8 @@ export default {
     rowClicked: ''
   }),
   created () {
-    if (!this.load) {
-      this.getList()
-    } else {
-      this.tableData = this.details()
-      this.loading = false
-    }
+    this.tableData = this.details()
+    this.loading = false
   },
   methods: {
     ...mapGetters({
@@ -70,7 +66,7 @@ export default {
       listById: 'validations/selectById'
     }),
     ...mapActions({
-      getList: 'validations/list'
+      putList: 'validations/put'
     }),
     convertTimeStamp (timeStamp) {
       return date.formatDate(timeStamp, 'DD/MM/YY [ás] HH:mm')
@@ -78,8 +74,13 @@ export default {
     rowClick (row) {
       this.rowClicked = row.id
     },
-    edit () {},
-    remove () {},
+    async remove () {
+      await this.putList(this.rowClicked).then(resp => {
+        this.alertSuccess(resp)
+      }).catch(() => {
+        this.alertError('Ocorreu um erro, já já iremos corrigir')
+      })
+    },
     download () {
       const funct = this.listById()
       const row = funct(this.rowClicked)
