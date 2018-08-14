@@ -1,3 +1,4 @@
+// Basic infos to server
 const express = require('express')
 const serveStatic = require('serve-static')
 const bodyParser = require('body-parser')
@@ -10,8 +11,8 @@ const app = express()
 // Socket-io
 const validMailSocket = require('../socket.io/validMail')
 
-const server = require('http').createServer(app)
-app.io = require('socket.io')(server)
+const server = app.listen(port)
+app.io = require('socket.io').listen(server)
 app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 validMailSocket.start(app.io)
 
@@ -40,8 +41,6 @@ app.use(bodyParser.urlencoded({
 
 app.use(history())
 app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
-
-server.listen(port, () => console.log(`Listening on ${port}`)) // eslint-disable-line
 
 module.exports = {
   app
