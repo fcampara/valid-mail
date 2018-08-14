@@ -10,9 +10,8 @@ const app = express()
 
 // Socket-io
 const validMailSocket = require('../socket.io/validMail')
-
-const server = app.listen(port)
-app.io = require('socket.io').listen(server)
+const server = require('http').Server(app)
+app.io = require('socket.io')(server)
 app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 validMailSocket.start(app.io)
 
@@ -41,6 +40,8 @@ app.use(bodyParser.urlencoded({
 
 app.use(history())
 app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
+
+server.listen(port)
 
 module.exports = {
   app
