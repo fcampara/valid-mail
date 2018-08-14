@@ -11,20 +11,21 @@ export default {
 
   getters: {
     details (state) {
-      const list = state.list
-      let details = []
-      for (let item of list) {
-        details.push({
+      const { list } = state
+      return list && list.map(item => {
+        return {
           id: item.id,
           createdAt: item.details.createdAt,
           invalid: item.details.invalid,
           valid: item.details.valid,
           nameFile: item.details.nameFile,
           length: item.details.length
-        })
-      }
-
-      return details
+        }
+      }).sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1
+        if (a.createdAt < b.createdAt) return 1
+        return 0
+      })
     },
 
     selectById (state) {

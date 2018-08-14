@@ -80,7 +80,10 @@ async function listValidation ({name, data, header}, user) {
     user: user,
     details: details,
     valid: listValid
-  }).then().catch(err => {
+  }).then(() => {
+    const socket = validMailSocket.getUserById(user.uid)
+    if (socket) app.io.of('/validMail').to(socket.socketId).emit('save', {save: 'Salvo com sucesso'})
+  }).catch(err => {
     saveError(err)
   })
 }
@@ -99,9 +102,7 @@ async function validationMail (email, cont, uid) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  if (socket) {
-    app.io.of('/validMail').to(socket.socketId).emit('message', {info: verifierMail, email: email})
-  }
+  if (socket) app.io.of('/validMail').to(socket.socketId).emit('message', {info: verifierMail, email: email})
   console.log(verifierMail, email, cont) // eslint-disable-line
   return verifierMail
 }

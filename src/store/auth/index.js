@@ -9,7 +9,7 @@ export default {
 
   getters: {
     user (state) {
-      const user = state.user
+      const { user } = state
       return {
         name: user.displayName,
         email: user.email,

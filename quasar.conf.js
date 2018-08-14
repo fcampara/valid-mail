@@ -45,6 +45,7 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       components: [
+        'QScrollObservable',
         'QBtnGroup',
         'QPageSticky',
         'QChip',

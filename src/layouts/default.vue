@@ -44,8 +44,14 @@
         <q-btn label="Limpar" color="amber" icon="fa fa-trash" class="float-right" @click="clearMessages()"/>
       </q-list-header>
       <div style="padding: 25px 16px 16px;">
-        <p class="caption" v-for="n in messages" :key="`${n.email}-${messages.lenght}`">
-          <em class="ellipsis"><q-icon :color="n.info.sysValid ? 'positive' : 'negative'" :name="n.info.sysValid ? 'thumb_up' : 'thumb_down'" /> {{n.email}}</em>
+        <p class="caption" v-for="(n, index) in messages" :key="`${n.email}-${index}`">
+          <em class="ellipsis" v-if="n.info">
+            <q-icon :color="n.info.sysValid ? 'positive' : 'negative'" :name="n.info.sysValid ? 'thumb_up' : 'thumb_down'" />
+            {{n.email}}
+          </em>
+          <em v-if="n.save">
+            {{n.save}}
+          </em>
         </p>
       </div>
     </q-layout-drawer>
@@ -59,6 +65,9 @@
 </template>
 
 <script>
+import { scroll } from 'quasar'
+const { getScrollTarget, setScrollPosition } = scroll
+
 import ValidSingle from '../components/validSingle.vue'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
@@ -86,6 +95,10 @@ export default {
     ...mapActions({
       getList: 'validations/list'
     }),
+    scrollToElement (el) {
+      const target = getScrollTarget(el), offset = el.scrollHeight
+      setScrollPosition(target, offset, 1000)
+    },
     loadList () {
       if (this.load === false) {
         this.$q.loading.show({message: 'Carregando sua lista de email'})
@@ -113,8 +126,20 @@ export default {
     this.user.name = 'Felipe'
     socket.emit('setUser', this.user)
     socket.on('message', (message) => {
-      if (message.email) this.messages.push(message)
+      if (message.email) {
+        this.messages.push(message)
+        this.scrollToElement(document.getElementsByTagName('aside')[1])
+        // const aside = document.getElementsByTagName('aside')[1]
+        // aside.scrollTop = aside.scrollHeight + 100
+      }
       console.log(this.messages) // eslint-disable-line
+    })
+    socket.on('save', (message) => {
+      console.log('Salvo: ', message)
+      if (message.save) {
+        this.messages.push(message)
+        this.scrollToElement(document.getElementsByTagName('aside')[1])
+      }
     })
   }
 }
