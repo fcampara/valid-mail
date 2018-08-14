@@ -135,7 +135,6 @@ export default {
       console.log(this.messages) // eslint-disable-line
     })
     socket.on('save', (message) => {
-      console.log('Salvo: ', message)
       if (message.save) {
         this.messages.push(message)
         this.scrollToElement(document.getElementsByTagName('aside')[1])
