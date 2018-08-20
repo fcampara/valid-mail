@@ -28,7 +28,6 @@ export default {
   },
   computed: {
     mousePX () {
-      console.log(this.width)
       return this.mouseX / this.width
     },
     mousePY () {

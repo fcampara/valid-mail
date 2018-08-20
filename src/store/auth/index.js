@@ -58,14 +58,12 @@ export default {
 
   actions: {
     async signInWithEmail ({ commit, state }, payload) {
-      console.log(state)
       let email = payload.email
       let password = payload.password
 
       await Firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
         commit('SET_USER', user)
       }).catch(error => {
-        console.log(error)
         commit('SET_MESSAGE_ERROR', error)
         throw state.message
       })

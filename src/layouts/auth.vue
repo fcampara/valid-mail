@@ -54,19 +54,7 @@ export default {
   methods: {
     ...mapActions({
       signIn: 'auth/signIn'
-    }),
-    navigate () {
-      // this.$bus.$emit("navigate", this.navigation)
-    },
-    doSignUp (obj) {
-      // fingir que há uma chamada AJAX
-      window.console.log(obj)
-    }
-  },
-  watch: {
-    navigation (newValue) {
-      console.log(newValue)
-    }
+    })
   }
 }
 </script>
