@@ -92,10 +92,8 @@ export default {
     loginSocial (social) {
       this.loading[social] = true
       this.signInWithPopup(social).then(() => {
-        console.log(social)
         this.loading[social] = false
-      }).catch((error) => {
-        console.log(error)
+      }).catch(() => {
         this.loading[social] = false
       })
     },
