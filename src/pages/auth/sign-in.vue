@@ -1,17 +1,17 @@
 <template>
   <form class="sign-in-htm">
     <q-field :error="userError" :error-label="msgUserError">
-      <q-input @input="$v.email.$touch()" v-model="email" type="email" float-label="Email"/>
+      <q-input @keyup.enter="submit" @input="$v.email.$touch()" v-model="email" type="email" float-label="Email"/>
     </q-field>
 
     <q-field :error="passError" :error-label="msgPassError">
-      <q-input @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
+      <q-input @keyup.enter="submit" @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
     </q-field>
 
     <q-btn :loading="loading.email" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar" @click="submit"/>
-    <q-btn icon="fab fa-facebook-f" class="full-width q-mt-xl facebook" label="Continuar com o Facebook" />
-    <q-btn icon="fab fa-google" class="full-width q-mt-sm google" label="Continuar com o Google" />
-  </form>
+    <q-btn :loading="loading.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
+    <q-btn :loading="loading.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/>
+</form>
 </template>
 
 <script>
@@ -78,7 +78,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      signInWithEmail: 'auth/signInWithEmail'
+      signInWithEmail: 'auth/signInWithEmail',
+      signInWithPopup: 'auth/signInWithPopup'
     }),
     submit () {
       this.$v.$touch()
@@ -87,6 +88,16 @@ export default {
       } else {
         this.$v.$touch()
       }
+    },
+    loginSocial (social) {
+      this.loading[social] = true
+      this.signInWithPopup(social).then(() => {
+        console.log(social)
+        this.loading[social] = false
+      }).catch((error) => {
+        console.log(error)
+        this.loading[social] = false
+      })
     },
     reset (selected) {
       if (selected === 'signup') {

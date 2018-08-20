@@ -59,11 +59,11 @@ export default {
           list.push(data)
         })
         commit('SET_LIST', list)
-      }, err => {
-        console.log(err)// eslint-disable-line no-console
+      }, () => {
+        commit('RESET_LIST')
       })
     },
-    async put ({commit}, payload) {
+    async put (payload) {
       const dbList = Firebase.firestore().collection('validations')
       const resp = new Promise((resolve, reject) => {
         dbList.doc(payload).delete().then((resp) => {

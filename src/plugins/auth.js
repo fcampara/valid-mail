@@ -7,7 +7,6 @@ export default ({ app, router, Vue, store }) => {
     let authRequired = to.matched.some(route => route.meta.authRequired)
 
     let isAuthenticated = Firebase.auth().currentUser !== null
-
     if (authRequired) {
       if (isAuthenticated) {
         // User is already signed in. Continue on.

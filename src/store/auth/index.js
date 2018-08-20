@@ -69,6 +69,18 @@ export default {
       })
     },
 
+    async signInWithPopup ({ commit }, payload) {
+      Firebase.auth().languageCode = 'pt'
+      const provider = payload === 'google' ? new Firebase.auth.GoogleAuthProvider() : new Firebase.auth.FacebookAuthProvider()
+
+      Firebase.auth().signInWithPopup(provider).then((result) => {
+        console.log(result)
+        commit('SET_USER', result.user)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+
     async signOut ({ commit }) {
       await Firebase.auth().signOut().then(() => {
         commit('SET_USER', {})
