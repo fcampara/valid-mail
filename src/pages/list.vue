@@ -1,15 +1,10 @@
 <template>
-    <q-table :data="tableData" :columns="columns" row-key="name" :filter="filter" :loading="loading">
+    <q-table :data="tableData" :columns="columns" row-key="name" :filter="filter" :loading="loading"
+      :pagination.sync="paginationControl"
+      :rows-per-page-options="[15,50,0]"
+    >
       <template slot="top-left" slot-scope="props">
         <q-search v-model="filter"/>
-      </template>
-
-      <template slot="top-right" slot-scope="props">
-        <q-btn
-          flat round dense
-          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-          @click="props.toggleFullscreen"
-        />
       </template>
 
       <q-tr class="cursor-pointer" slot="body" slot-scope="props" :props="props" @click.native="rowClick(props.row)">
@@ -35,6 +30,7 @@
     </q-table>
 </template>
 <script>
+
 import XLSX from 'xlsx'
 import { date } from 'quasar'
 import { mapGetters, mapState, mapActions } from 'vuex'
@@ -45,6 +41,7 @@ export default {
   name: 'ListPage',
   data: () => ({
     tableData: [],
+    paginationControl: { rowsPerPage: 15, page: 1 },
     columns: [
       { name: 'nameFile', label: '', field: 'nameFile', align: 'left', sortable: true },
       { name: 'createdAt', label: 'Válidado em', field: 'length', sortable: true },

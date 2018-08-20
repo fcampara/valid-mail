@@ -6,7 +6,8 @@ export default [
     component: () => import('layouts/auth'),
     children:
     [
-      { path: 'sign-in', name: 'signIn', component: () => import('pages/auth/sign-in') }
+      { path: 'sign-in', name: 'signIn', component: () => import('pages/auth/sign-in') },
+      { path: 'sign-up', name: 'signUp', component: () => import('pages/auth/sign-up') }
     ]
   },
   { // Main Routes

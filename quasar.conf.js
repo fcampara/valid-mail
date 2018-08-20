@@ -8,7 +8,8 @@ module.exports = function (ctx) {
       'axios',
       'firebase',
       'boot',
-      'vue-lodash'
+      'vue-lodash',
+      'vuelidate'
     ],
     css: [
       'app.styl'
@@ -59,7 +60,6 @@ module.exports = function (ctx) {
         'QTable',
         'QTr',
         'QTd',
-        'QUploader',
         'QBtn',
         'QCard',
         'QCardActions',

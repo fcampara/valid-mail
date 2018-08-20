@@ -4,7 +4,11 @@ export default {
   namespaced: true,
 
   state: {
-    user: {}
+    user: {},
+    message: {
+      error: '',
+      success: ''
+    }
   },
 
   getters: {
@@ -31,18 +35,39 @@ export default {
 
     RESET_USER (state) {
       state.user = null
+    },
+
+    SET_MESSAGE_ERROR (state, payload) {
+      switch (payload.code) {
+        case 'auth/user-not-found':
+          state.message = {
+            type: 1,
+            error: 'Usuário não encontrado'
+          }
+          break
+
+        case 'auth/wrong-password':
+          state.message = {
+            type: 2,
+            error: 'Senha incorreta'
+          }
+          break
+      }
     }
   },
 
   actions: {
-    async signIn ({ commit }, payload) {
+    async signInWithEmail ({ commit, state }, payload) {
+      console.log(state)
       let email = payload.email
       let password = payload.password
 
       await Firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
         commit('SET_USER', user)
       }).catch(error => {
-        throw error
+        console.log(error)
+        commit('SET_MESSAGE_ERROR', error)
+        throw state.message
       })
     },
 

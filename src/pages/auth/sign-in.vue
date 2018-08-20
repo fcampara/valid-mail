@@ -1,66 +1,115 @@
 <template>
-  <q-page class="flex flex-center">
+  <form class="sign-in-htm">
+    <q-field :error="userError" :error-label="msgUserError">
+      <q-input @input="$v.email.$touch()" v-model="email" type="email" float-label="Email"/>
+    </q-field>
 
-    <q-card inline color="white" class="card-sign-in q-pa-md">
-      <q-card-media class="q-pa-md">
-        <img src="" />
-      </q-card-media>
+    <q-field :error="passError" :error-label="msgPassError">
+      <q-input @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
+    </q-field>
 
-      <q-card-title class="text-dark text-center">
-        Sign in to your account
-      </q-card-title>
-
-      <form @submit.prevent="signIn()">
-        <q-card-main>
-          <q-field icon="email" icon-color="light" class="q-mt-md">
-            <q-input placeholder="Email Address" v-model="form.email" type="email" autocomplete="username"/>
-          </q-field>
-
-          <q-field icon="lock" icon-color="light" class="q-mt-lg">
-            <q-input placeholder="Password" v-model="form.password" type="password" autocomplete="current-password"/>
-          </q-field>
-        </q-card-main>
-
-        <q-card-actions align="center" class="q-mt-lg">
-          <q-btn label="Sign In" color="primary" size="large" type="submit"/>
-        </q-card-actions>
-      </form>
-
-    </q-card>
-
-  </q-page>
+    <q-btn :loading="loading.email" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar" @click="submit"/>
+    <q-btn icon="fab fa-facebook-f" class="full-width q-mt-xl facebook" label="Continuar com o Facebook" />
+    <q-btn icon="fab fa-google" class="full-width q-mt-sm google" label="Continuar com o Google" />
+  </form>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import { required, minLength, email } from 'vuelidate/lib/validators'
 export default {
-  name: 'PageSignIn',
+  mounted () {
+    // this.$bus.$on('navigate', this.reset)
+  },
+  validations: {
+    email: {
+      required,
+      email
+    },
+    password: {
+      required,
+      minLength: minLength(6)
+    }
+  },
   data () {
     return {
-      form: {
-        email: '',
-        password: ''
+      email: '',
+      password: '',
+      error: {
+        type: 0,
+        msg: ''
+      },
+      loading: {
+        email: false,
+        google: false,
+        facebook: false
+      }
+    }
+  },
+  computed: {
+    userError () {
+      if (this.error.type === 1) return true
+      return this.$v.email.$dirty && this.$v.email.$invalid
+    },
+    msgUserError () {
+      if (this.error.type === 1) return this.error.msg
+      return this.$v.email.required ? 'Campo obrigatório' : 'Email com formato incorreto'
+    },
+    passError () {
+      if (this.error.type === 2) return true
+      return this.$v.password.$dirty && this.$v.password.$invalid
+    },
+    msgPassError () {
+      if (this.error.type === 2) return this.error.msg
+      return !this.$v.password.required ? 'Campo obrigatório' : 'Mínimo 6 caracteres'
+    }
+  },
+  watch: {
+    email () {
+      if (this.error.type === 1) {
+        this.error.type = 0
+      }
+    },
+    password () {
+      console.log(this.error.type)
+      if (this.error.type === 2) {
+        this.error.type = 0
       }
     }
   },
   methods: {
-    signIn () {
-      let credentials = {
-        email: this.form.email,
-        password: this.form.password
+    ...mapActions({
+      signInWithEmail: 'auth/signInWithEmail'
+    }),
+    submit () {
+      this.$v.$touch()
+      if (!this.$v.$invalid) {
+        this.signIn()
+      } else {
+        this.$v.$touch()
       }
-
-      this.$store.dispatch('auth/signIn', credentials).then(user => {
-        this.$router.replace({ name: 'dashboard' })
-      }).catch(error => {
-        this.$q.notify('Invalid Login!')
-        console.error(`Not signed in: ${error.message}`) // eslint-disable-line no-console
+    },
+    reset (selected) {
+      if (selected === 'signup') {
+        this.email = ''
+        this.password = ''
+        this.keepSignedIn = true
+        this.$v.$reset()
+      }
+    },
+    signIn () {
+      this.loading.email = true
+      this.signInWithEmail({
+        email: this.email,
+        password: this.password
+      }).then(() => {
+        this.loading.email = false
+      }).catch(({error, type}) => {
+        this.loading.email = false
+        this.error.type = type
+        this.error.msg = error
       })
     }
   }
 }
 </script>
-
-<style lang="stylus" scoped>
-  .card-sign-in
-    width 80%
-</style>
