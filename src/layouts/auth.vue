@@ -60,12 +60,6 @@ export default {
     },
     doSignUp (obj) {
       // fingir que há uma chamada AJAX
-      window.console.log(obj)
-    }
-  },
-  watch: {
-    navigation (newValue) {
-      console.log(newValue)
     }
   }
 }

@@ -71,7 +71,6 @@ export default {
       }
     },
     password () {
-      console.log(this.error.type)
       if (this.error.type === 2) {
         this.error.type = 0
       }
