@@ -14,13 +14,13 @@ module.exports = {
 
   user: (user) => {
     const schema = Joi.object().required().keys({
-      name: Joi.any(),
+      displayName: Joi.any(),
       email: Joi.any(),
-      phoneNumber: Joi.any(),
       uid: Joi.string().required()
     })
 
     const { error } = Joi.validate(user, schema)
+    console.log(error)
     return error
   },
 

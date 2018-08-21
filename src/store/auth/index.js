@@ -1,10 +1,15 @@
 import Firebase from 'firebase/app'
-
+const staticUser = {
+  displayName: '',
+  email: '',
+  uid: '',
+  photoURL: ''
+}
 export default {
   namespaced: true,
 
   state: {
-    user: {},
+    user: staticUser,
     message: {
       error: '',
       success: ''
@@ -12,13 +17,13 @@ export default {
   },
 
   getters: {
-    user (state) {
+    currentUser (state) {
       const { user } = state
       return {
-        name: user.displayName,
+        displayName: user.displayName,
         email: user.email,
         uid: user.uid,
-        phoneNumber: user.phoneNumber
+        photoURL: user.photoURL
       }
     },
 
@@ -34,7 +39,7 @@ export default {
     },
 
     RESET_USER (state) {
-      state.user = null
+      state.user = staticUser
     },
 
     SET_MESSAGE_ERROR (state, payload) {
@@ -52,15 +57,42 @@ export default {
             error: 'Senha incorreta'
           }
           break
+
+        case 'auth/email-already-in-use':
+          state.message = {
+            type: 1,
+            error: 'Email já está sendo utilizado'
+          }
+          break
+
+        default:
+          state.message = {
+            type: 0,
+            error: 'Ocorreu um erro inesperado :('
+          }
+          break
       }
     }
   },
 
   actions: {
-    async signInWithEmail ({ commit, state }, payload) {
-      let email = payload.email
-      let password = payload.password
+    async signUpWithEmail ({ commit, state }, { email, username, password }) {
+      await Firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+        const currentUser = Firebase.auth().currentUser
 
+        currentUser.updateProfile({
+          displayName: username,
+          photoURL: './../statics/kong.png'
+        })
+      }).catch(error => {
+        console.log(error)
+        console.log('Error insert')
+        commit('SET_MESSAGE_ERROR', error)
+        throw state.message
+      })
+    },
+
+    async signInWithEmail ({ commit, state }, { email, password }) {
       await Firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
         commit('SET_USER', user)
       }).catch(error => {

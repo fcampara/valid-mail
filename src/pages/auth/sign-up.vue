@@ -1,77 +1,108 @@
 <template>
-  <form action='#' @submit.prevent='submit' class='sign-up-htm'>
-    <div class='group'>
-      <label :class='{ invalid: $v.username.$dirty && $v.username.$invalid }' for='sign-up-user' class='label'>Username</label>
-      <input @input='$v.username.$touch()' :class='{ invalid: $v.username.$dirty && $v.username.$invalid }' id='sign-up-user' type='text' class='input' v-model='username'>
-    </div>
-    <div class='group'>
-      <label :class='{ invalid: $v.password.$dirty && $v.password.$invalid }' for='sign-up-pass1' class='label'>Password</label>
-      <input @input='$v.password.$touch()' :class='{ invalid: $v.password.$dirty && $v.password.$invalid }' id='sign-up-pass1' type='password' class='input' data-type='password' v-model='password'>
-    </div>
-    <div class='group'>
-      <label :class='{ invalid: $v.password2.$dirty && $v.password2.$invalid }' for='sign-up-pass2' class='label'>Repeat Password</label>
-      <input @input='$v.password2.$touch()' :class='{ invalid: $v.password2.$dirty && $v.password2.$invalid }' id='sign-up-pass2' type='password' class='input' data-type='password' v-model='password2'>
-    </div>
-    <div class='group'>
-      <label :class='{ invalid: $v.email.$dirty && $v.email.$invalid }' for='email' class='label'>Email Address</label>
-      <input @input='$v.email.$touch()' :class='{ invalid: $v.email.$dirty && $v.email.$invalid }' id='email' type='text' class='input' v-model='email'>
-    </div>
-    <div class='group'>
-      <input type='submit' class='button' value='Sign Up'>
-    </div>
-    <div class='hr'></div>
-    <div class='foot-lnk'>
-      <a href='#' for='tab-1'>Already Member?</a>
-    </div>
+  <form class="sign-up-htm">
+    <q-field :error="$v.username.$dirty && $v.username.$invalid" :error-label="msgErrorUsername">
+      <q-input @input="$v.username.$touch()" clearable v-model="username" float-label="Nome completo"/>
+    </q-field>
+
+    <q-field :error="errorEmail" :error-label="msgErrorEmail">
+      <q-input @input="$v.email.$touch()" clearable v-model="email" type="email" float-label="Email"/>
+    </q-field>
+
+    <q-field :error="$v.password.$dirty && $v.password.$invalid" :error-label="msgErrorPassword">
+      <q-input @input="checkPassword" @clear="repeatPassword = ''" @blur="$v.repeatPassword.$touch()" clearable v-model="password" type="password" float-label="Senha"/>
+    </q-field>
+
+    <q-field :error="$v.repeatPassword.$dirty && $v.repeatPassword.$invalid" :error-label="msgErrorRepeatPassword">
+      <q-input @input="$v.repeatPassword.$touch()" clearable v-model="repeatPassword" type="password" float-label="Confirmar senha"/>
+    </q-field>
+
+    <q-btn @click="submit" class="full-width q-mt-xl" color="primary" label="Cadastrar"/>
   </form>
 </template>
 
 <script>
-import { required, sameAs, email } from 'vuelidate/lib/validators'
+import { mapActions } from 'vuex'
+import { required, sameAs, email, minLength, requiredIf, helpers } from 'vuelidate/lib/validators'
+
+const alpha = helpers.regex('alpha', /^[a-zA-Z\s\u00C0-\u00FF]*$/)
 export default {
   mounted () {
-    // this.$bus.$on('navigate', this.reset)
+    this.$root.$on('navigate', this.reset)
   },
   validations: {
-    username: {
-      required
+    email: { required, email },
+    username: { required, minLength: minLength(3), alpha },
+    password: { required, minLength: minLength(6) },
+    repeatPassword: {
+      sameAsPassword: sameAs('password'),
+      required: requiredIf(function () {
+        return this.password.length !== 0
+      })}
+  },
+  data: () => ({
+    email: '',
+    username: '',
+    password: '',
+    repeatPassword: '',
+    error: {
+      type: 0,
+      msg: ''
+    }
+  }),
+  computed: {
+    disabledRepeat () {
+      return this.password.length === 0
     },
-    password: {
-      required
+    msgErrorUsername () {
+      if (!this.$v.username.required) return 'Campo obrigatório'
+      if (!this.$v.username.minLength) return 'Mínimo 3 caracteres'
+      if (!this.$v.username.alpha) return 'Permitido apenas letras'
     },
-    password2: {
-      required,
-      sameAsPassword: sameAs('password')
+    errorEmail () {
+      if (this.error.type === 1) return true
+      return this.$v.email.$dirty && this.$v.email.$invalid
     },
-    email: {
-      required,
-      email
+    msgErrorEmail () {
+      if (this.error.type === 1) return this.error.msg
+      return !this.$v.email.required ? 'Campo obrigatório' : 'Email com formato incorreto'
+    },
+    msgErrorPassword () {
+      return !this.$v.password.required ? 'Campo obrigatório' : 'Mínimo 6 caracteres'
+    },
+    msgErrorRepeatPassword () {
+      return !this.$v.repeatPassword.required ? 'Campo obrigatório' : 'As senhas devem ser iguais'
     }
   },
-  data () {
-    return {
-      username: '',
-      password: '',
-      password2: '',
-      email: ''
+  watch: {
+    email () {
+      if (this.error.type === 1) this.error.type = 0
     }
   },
   methods: {
+    ...mapActions({
+      'singUp': 'auth/signUpWithEmail'
+    }),
+    checkPassword () {
+      this.$v.password.$touch()
+      if (this.password.length === 0) this.repeatPassword = ''
+    },
     submit () {
       if (!this.$v.$invalid) {
-        this.$emit('do-sign-up', { ...this.$data })
-      } else {
-        this.$v.$touch()
-      }
+        const { email, password, username } = { ...this.$data }
+        this.singUp({email, password, username}).then(resp => {
+          console.log(resp)
+        }).catch(({error, type}) => {
+          this.error.msg = error
+          this.error.type = type
+        })
+      } else this.$v.$touch()
     },
-    reset (selected) {
-      if (selected === 'signup') {
-        this.username = ''
-        this.password = ''
-        this.password2 = ''
-        this.email = ''
-        this.$v.$reset()
-      }
+    reset () {
+      this.username = ''
+      this.password = ''
+      this.repeatPassword = ''
+      this.email = ''
+      this.$v.$reset()
     }
   }
 }

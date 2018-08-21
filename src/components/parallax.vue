@@ -99,7 +99,7 @@ h1+p, p+p {
 }
 
 .card-wrap {
-  margin: 10px;
+  // margin: 10px;
   transform: perspective(800px);
   transform-style: preserve-3d;
   // cursor: pointer;
@@ -174,8 +174,8 @@ h1+p, p+p {
 .card-info {
   padding: 20px;
   position: absolute;
-  bottom: 0;
-  color: #fff;
+  bottom: 10px;
+  color: #9e6cba;
   transform: translateY(40%);
   transition: 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
 
@@ -209,6 +209,6 @@ h1+p, p+p {
   font-family: "Playfair Display";
   font-size: 36px;
   font-weight: 700;
-  text-shadow: rgba(black, 0.5) 0 10px 10px;
+  text-shadow: rgba(10, 10, 10, 0.5) 0 0px 5px
 }
 </style>

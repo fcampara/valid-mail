@@ -3,7 +3,7 @@
     <div class="container">
       <div class="login-wrap shadow-24">
         <div class="login-pic">
-          <p-img data-image="../assets/logo/kong.png">
+          <p-img data-image="./../statics/kong.png">
             <h1 slot="header">Gorilla Mail</h1>
             <!-- <p slot="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p> -->
           </p-img>
@@ -13,12 +13,12 @@
         <input id="tab-1" type="radio" value="signin"
           v-model="navigation" @change="navigate"
           name="tab" class="sign-in" checked>
-        <label for="tab-1" class="tab">Sign In</label>
+        <label for="tab-1" class="tab">Entrar</label>
 
         <input id="tab-2" type="radio"  value="signup"
           v-model="navigation" @change="navigate"
           name="tab" class="sign-up">
-        <label for="tab-2" class="tab">Sign Up</label>
+        <label for="tab-2" class="tab">Registrar</label>
 
         <div class="login-form">
           <sign-in/>
@@ -56,7 +56,7 @@ export default {
       signIn: 'auth/signIn'
     }),
     navigate () {
-      // this.$bus.$emit("navigate", this.navigation)
+      this.$root.$emit('navigate', this.navigation)
     },
     doSignUp (obj) {
       // fingir que há uma chamada AJAX

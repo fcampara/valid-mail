@@ -7,7 +7,7 @@
         </q-btn>
         <q-toolbar-title>
           Kong Mailer
-          <span slot="subtitle">Header Subtitle</span>
+          <span slot="subtitle">Seu validador inteligente</span>
         </q-toolbar-title>
         <input-valid/>
           <q-btn flat round dense icon="notifications" @click="right = !right" >
@@ -16,12 +16,9 @@
       </q-toolbar>
     </q-layout-header>
 
-    <q-layout-drawer
-      v-model="left"
-      :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
-    >
+    <q-layout-drawer v-model="left" :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null">
       <q-list no-border link inset-delimiter >
-        <q-list-header>Essential Links</q-list-header>
+        <card-user/>
 
         <q-item :to="{ name: 'dashboard' }">
           <q-item-main>Dashboard</q-item-main>
@@ -29,10 +26,6 @@
 
         <q-item :to="{ name: 'list' }">
           <q-item-main>List</q-item-main>
-        </q-item>
-
-        <q-item @click.native="signOut()">
-          <q-item-main>Sign Out</q-item-main>
         </q-item>
 
       </q-list>
@@ -69,6 +62,7 @@ import { scroll } from 'quasar'
 const { getScrollTarget, setScrollPosition } = scroll
 
 import ValidSingle from '../components/validSingle.vue'
+import cardUser from '../components/cardUser.vue'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'LayoutDefault',
@@ -80,11 +74,12 @@ export default {
     }
   },
   components: {
-    'input-valid': ValidSingle
+    'input-valid': ValidSingle,
+    'card-user': cardUser
   },
   computed: {
     ...mapGetters({
-      user: 'auth/user'
+      user: 'auth/currentUser'
     }),
     ...mapState({
       load: state => state.validations.load,
@@ -104,9 +99,6 @@ export default {
         this.$q.loading.show({message: 'Carregando sua lista de email'})
         this.getList()
       }
-    },
-    signOut () {
-      this.$store.dispatch('auth/signOut')
     },
     clearMessages () {
       this.messages = []

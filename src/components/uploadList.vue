@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'auth/user'
+      user: 'auth/currentUser'
     })
   },
   methods: {
@@ -106,8 +106,9 @@ export default {
     },
     onCancel () {},
     upload () {
+      const { photoURL, ...args } = {...this.user}
       this.$axios.post('api/validation/list', {
-        user: this.user,
+        user: args,
         file: this.file
       }).then(response => {
         this.alertSuccess(response.data.msg)

@@ -1,17 +1,17 @@
 <template>
   <form class="sign-in-htm">
     <q-field :error="userError" :error-label="msgUserError">
-      <q-input @keyup.enter="submit" @input="$v.email.$touch()" v-model="email" type="email" float-label="Email"/>
+      <q-input autofocus clearable @keyup.prevent.enter="submit" @input="$v.email.$touch()" v-model="email" type="email" float-label="Email"/>
     </q-field>
 
     <q-field :error="passError" :error-label="msgPassError">
-      <q-input @keyup.enter="submit" @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
+      <q-input clearable @keyup.prevent.enter="submit" @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
     </q-field>
 
-    <q-btn :loading="loading.email" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar" @click="submit"/>
+    <q-btn :loading="loading.email" @click="submit" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar"/>
     <q-btn :loading="loading.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
     <q-btn :loading="loading.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/>
-</form>
+  </form>
 </template>
 
 <script>
@@ -19,33 +19,25 @@ import { mapActions } from 'vuex'
 import { required, minLength, email } from 'vuelidate/lib/validators'
 export default {
   mounted () {
-    // this.$bus.$on('navigate', this.reset)
+    this.$root.$on('navigate', this.reset)
   },
   validations: {
-    email: {
-      required,
-      email
+    email: { required, email },
+    password: { required, minLength: minLength(6) }
+  },
+  data: () => ({
+    email: '',
+    password: '',
+    error: {
+      type: 0,
+      msg: ''
     },
-    password: {
-      required,
-      minLength: minLength(6)
+    loading: {
+      email: false,
+      google: false,
+      facebook: false
     }
-  },
-  data () {
-    return {
-      email: '',
-      password: '',
-      error: {
-        type: 0,
-        msg: ''
-      },
-      loading: {
-        email: false,
-        google: false,
-        facebook: false
-      }
-    }
-  },
+  }),
   computed: {
     userError () {
       if (this.error.type === 1) return true
@@ -53,7 +45,7 @@ export default {
     },
     msgUserError () {
       if (this.error.type === 1) return this.error.msg
-      return this.$v.email.required ? 'Campo obrigatório' : 'Email com formato incorreto'
+      return this.$v.email.required ? 'Email com formato incorreto' : 'Campo obrigatório'
     },
     passError () {
       if (this.error.type === 2) return true
@@ -82,7 +74,6 @@ export default {
       signInWithPopup: 'auth/signInWithPopup'
     }),
     submit () {
-      this.$v.$touch()
       if (!this.$v.$invalid) {
         this.signIn()
       } else {
@@ -97,14 +88,6 @@ export default {
         this.loading[social] = false
       })
     },
-    reset (selected) {
-      if (selected === 'signup') {
-        this.email = ''
-        this.password = ''
-        this.keepSignedIn = true
-        this.$v.$reset()
-      }
-    },
     signIn () {
       this.loading.email = true
       this.signInWithEmail({
@@ -117,6 +100,15 @@ export default {
         this.error.type = type
         this.error.msg = error
       })
+    },
+    reset () {
+      this.email = ''
+      this.password = ''
+      this.error = {
+        type: 0,
+        msg: ''
+      }
+      this.$v.$reset()
     }
   }
 }
