@@ -89,9 +89,7 @@ export default {
     submit () {
       if (!this.$v.$invalid) {
         const { email, password, username } = { ...this.$data }
-        this.singUp({email, password, username}).then(resp => {
-          console.log(resp)
-        }).catch(({error, type}) => {
+        this.singUp({email, password, username}).then().catch(({error, type}) => {
           this.error.msg = error
           this.error.type = type
         })

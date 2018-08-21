@@ -85,8 +85,6 @@ export default {
           photoURL: './../statics/kong.png'
         })
       }).catch(error => {
-        console.log(error)
-        console.log('Error insert')
         commit('SET_MESSAGE_ERROR', error)
         throw state.message
       })

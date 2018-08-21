@@ -20,7 +20,6 @@ module.exports = {
     })
 
     const { error } = Joi.validate(user, schema)
-    console.log(error)
     return error
   },
 

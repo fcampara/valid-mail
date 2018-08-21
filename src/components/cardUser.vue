@@ -30,9 +30,6 @@ export default {
     ...mapActions({
       signOut: 'auth/signOut'
     })
-  },
-  created () {
-    console.log(this.user)
   }
 }
 </script>
