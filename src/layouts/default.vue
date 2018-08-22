@@ -94,44 +94,40 @@ export default {
       const target = getScrollTarget(el), offset = el.scrollHeight
       setScrollPosition(target, offset, 1000)
     },
-    loadList () {
+    async loadList () {
       if (this.load === false) {
         this.$q.loading.show({message: 'Carregando sua lista de email'})
-        this.getList()
+        await this.getList().then(() => {
+          this.$q.loading.hide()
+        })
       }
     },
     clearMessages () {
       this.messages = []
     }
   },
-  watch: {
-    load (newValue) {
-      this.$q.loading.hide()
-    }
-  },
   created () {
     this.loadList()
-    // const io = require('socket.io-client')
-    // const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com/validMail`
-    // const socket = io.connect(url)
+    const io = require('socket.io-client')
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com/validMail`
+    const socket = io.connect(url)
 
-    // this.user.name = 'Felipe'
-    // socket.emit('setUser', this.user)
-    // socket.on('message', (message) => {
-    //   if (message.email) {
-    //     this.messages.push(message)
-    //     this.scrollToElement(document.getElementsByTagName('aside')[1])
-    //     // const aside = document.getElementsByTagName('aside')[1]
-    //     // aside.scrollTop = aside.scrollHeight + 100
-    //   }
-    //   console.log(this.messages) // eslint-disable-line
-    // })
-    // socket.on('save', (message) => {
-    //   if (message.save) {
-    //     this.messages.push(message)
-    //     this.scrollToElement(document.getElementsByTagName('aside')[1])
-    //   }
-    // })
+    socket.emit('setUser', this.user)
+    socket.on('message', (message) => {
+      if (message.email) {
+        this.messages.push(message)
+        this.scrollToElement(document.getElementsByTagName('aside')[1])
+        // const aside = document.getElementsByTagName('aside')[1]
+        // aside.scrollTop = aside.scrollHeight + 100
+      }
+      console.log(this.messages) // eslint-disable-line
+    })
+    socket.on('save', (message) => {
+      if (message.save) {
+        this.messages.push(message)
+        this.scrollToElement(document.getElementsByTagName('aside')[1])
+      }
+    })
   }
 }
 </script>

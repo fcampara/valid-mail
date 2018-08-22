@@ -1,5 +1,5 @@
 <template>
-    <q-table :data="tableData" :columns="columns" row-key="name" :filter="filter" :loading="loading"
+    <q-table :data="this.details()" :columns="columns" row-key="name" :filter="filter"
       :pagination.sync="paginationControl"
       :rows-per-page-options="[15,50,0]"
     >
@@ -33,14 +33,13 @@
 
 import XLSX from 'xlsx'
 import { date } from 'quasar'
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { Alert } from '../components/alert'
 
 export default {
   mixins: [Alert],
   name: 'ListPage',
   data: () => ({
-    tableData: [],
     paginationControl: { rowsPerPage: 15, page: 1 },
     columns: [
       { name: 'nameFile', label: '', field: 'nameFile', align: 'left', sortable: true },
@@ -50,13 +49,8 @@ export default {
       { name: 'invalid', label: 'Inválidos', field: 'invalid', sortable: true }
     ],
     filter: '',
-    loading: true,
     rowClicked: ''
   }),
-  created () {
-    this.tableData = this.details()
-    this.loading = false
-  },
   methods: {
     ...mapGetters({
       details: 'validations/details',
@@ -107,20 +101,6 @@ export default {
       const funct = this.listById()
       const row = funct(this.rowClicked)
       this.$router.push({ path: `/list/${row.id}` })
-    }
-  },
-  computed: {
-    ...mapState({
-      load: state => state.validations.load,
-      list: state => state.validations.list
-    })
-  },
-  watch: {
-    list (newValue) {
-      if (this.load === true) {
-        this.tableData = this.details()
-        this.loading = false
-      }
     }
   }
 }

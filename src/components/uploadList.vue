@@ -89,14 +89,14 @@ export default {
     async choose (okFn, opt) {
       switch (opt) {
         case 0:
-          this.file.header = this.file.data[0]
-          this.file.data.shift()
+          const length = this.file.data[0].length
+          for (let i = 0; i < length; i++) this.file.header.push(`cabeçalho${i + 1}`)
           await okFn()
           break
 
         case 1:
-          const length = this.file.data[0].length
-          for (let i = 0; i < length; i++) this.file.header.push(`cabeçalho${i + 1}`)
+          this.file.header = this.file.data[0]
+          this.file.data.shift()
           await okFn()
           break
       }

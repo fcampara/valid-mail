@@ -37,42 +37,40 @@ export default {
 
   mutations: {
     SET_LIST (state, payload) {
-      let list = payload
+      state.list = payload
       state.load = true
-      state.list = list
     },
 
     RESET_LIST (state) {
-      state.load = false
       state.list = null
+      state.load = false
     }
   },
 
   actions: {
-    async list ({ commit, rootState }) {
+    list ({ commit, rootState }) {
       const dbList = Firebase.firestore().collection('validations')
-      await dbList.where('uid', '==', rootState.auth.user.uid).onSnapshot(querySnapshot => {
-        let list = []
-        querySnapshot.forEach(doc => {
-          const data = doc.data()
-          data.id = doc.id
-          list.push(data)
+      return new Promise(resolve => {
+        dbList.where('uid', '==', rootState.auth.user.uid).onSnapshot(querySnapshot => {
+          let list = []
+          querySnapshot.forEach(doc => {
+            const data = doc.data()
+            data.id = doc.id
+            list.push(data)
+          })
+
+          commit('SET_LIST', list)
+          resolve('Sucesso')
+        }, () => {
+          commit('RESET_LIST')
         })
-        commit('SET_LIST', list)
-      }, () => {
-        commit('RESET_LIST')
       })
     },
-    async put (payload) {
+    put ({ commit }, payload) {
       const dbList = Firebase.firestore().collection('validations')
-      const resp = new Promise((resolve, reject) => {
-        dbList.doc(payload).delete().then((resp) => {
-          resolve('Deleteado com sucesso')
-        }).catch(err => {
-          reject(err)
-        })
+      return new Promise((resolve, reject) => {
+        dbList.doc(payload).delete().then(() => resolve('Deleteado com sucesso')).catch(err => reject(err))
       })
-      return resp
     }
   }
 }
