@@ -12,7 +12,7 @@ const app = express()
 const validMailSocket = require('../socket.io/validMail')
 const server = require('http').Server(app)
 app.io = require('socket.io')(server)
-app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
+// app.io.origins(['http://valid-mail.herokuapp.com', 'http://localhost:8080'])
 validMailSocket.start(app.io)
 
 const allowCors = (req, res, next) => {
