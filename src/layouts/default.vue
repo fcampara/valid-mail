@@ -109,8 +109,8 @@ export default {
   created () {
     this.loadList()
     const io = require('socket.io-client')
-    // const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com/validMail`
-    const socket = io.connect('http://localhost:5000/validMail')
+    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
+    const socket = io.connect(url)
     console.log(socket) // eslint-disable-line
     socket.emit('setUser', this.user)
 
