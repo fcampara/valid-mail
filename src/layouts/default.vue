@@ -110,7 +110,7 @@ export default {
     this.loadList()
     const io = require('socket.io-client')
     // const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : `http://valid-mail.herokuapp.com/validMail`
-    const socket = io.connect('http://localhost:5000/validMail')
+    const socket = io.connect('http://valid-mail.herokuapp.com/validMail')
     console.log(socket) // eslint-disable-line
     socket.emit('setUser', this.user)
 
@@ -119,6 +119,7 @@ export default {
     socket.on('connect_timeout', (timeout) => console.log('connect_timeout: ', JSON.stringify(timeout))) // eslint-disable-line
     socket.on('ping', () => console.log('Ping')) // eslint-disable-line
     socket.on('pong', (latency) => console.log('Pong: ', latency)) // eslint-disable-line
+    socket.on('disconnect', (reason) => console.log('Reason: ', reason)) // eslint-disable-line
 
     socket.on('message', (message) => {
       if (message.email) {
