@@ -11,7 +11,7 @@
         </q-toolbar-title>
         <input-valid/>
           <q-btn flat round dense icon="notifications" @click="right = !right" >
-          <q-chip v-if="messages.length > 0" floating color="red">{{messages.length}}</q-chip>
+          <q-chip v-if="messages.length > 0" floating color="red"> * </q-chip>
         </q-btn>
       </q-toolbar>
     </q-layout-header>
@@ -32,21 +32,7 @@
     </q-layout-drawer>
 
     <q-layout-drawer id="timeline" side="right" v-model="right" content-class="bg-grey-3">
-      <q-list-header>
-        Timeline
-        <q-btn label="Limpar" color="amber" icon="fa fa-trash" class="float-right" @click="clearMessages()"/>
-      </q-list-header>
-      <div style="padding: 25px 16px 16px;">
-        <p class="caption" v-for="(n, index) in messages" :key="`${n.email}-${index}`">
-          <em class="ellipsis" v-if="n.info">
-            <q-icon :color="n.info.sysValid ? 'positive' : 'negative'" :name="n.info.sysValid ? 'thumb_up' : 'thumb_down'" />
-            {{n.email}}
-          </em>
-          <em v-if="n.save">
-            {{n.save}}
-          </em>
-        </p>
-      </div>
+      <t-line :messages="messages" :info="info"/>
     </q-layout-drawer>
 
     <q-page-container>
@@ -62,20 +48,25 @@ import { scroll } from 'quasar'
 const { getScrollTarget, setScrollPosition } = scroll
 
 import ValidSingle from '../components/validSingle.vue'
+import timeline from '../components/timeline.vue'
 import cardUser from '../components/cardUser.vue'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'LayoutDefault',
-  data () {
-    return {
-      messages: [],
-      left: true,
-      right: false
-    }
-  },
+  data: () => ({
+    messages: [],
+    info: {
+      cont: 0,
+      length: 0,
+      name: ''
+    },
+    left: true,
+    right: false
+  }),
   components: {
     'input-valid': ValidSingle,
-    'card-user': cardUser
+    'card-user': cardUser,
+    't-line': timeline
   },
   computed: {
     ...mapGetters({
@@ -101,9 +92,11 @@ export default {
           this.$q.loading.hide()
         })
       }
-    },
-    clearMessages () {
-      this.messages = []
+    }
+  },
+  watch: {
+    messages (newValue) {
+      if (newValue.length === 100) this.messages.shift()
     }
   },
   created () {
@@ -111,24 +104,20 @@ export default {
     const io = require('socket.io-client')
     const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
     const socket = io.connect(url)
-    console.log(socket) // eslint-disable-line
+
     socket.emit('setUser', this.user)
 
-    socket.on('connect', () => console.log('Conectado')) // eslint-disable-line
-    socket.on('connect_error', (error) => console.log('connect_error: ', JSON.stringify(error))) // eslint-disable-line
-    socket.on('connect_timeout', (timeout) => console.log('connect_timeout: ', JSON.stringify(timeout))) // eslint-disable-line
-    socket.on('ping', () => console.log('Ping')) // eslint-disable-line
-    socket.on('pong', (latency) => console.log('Pong: ', latency)) // eslint-disable-line
-    socket.on('disconnect', (reason) => console.log('Reason: ', reason)) // eslint-disable-line
-
     socket.on('message', (message) => {
+      this.info.cont = message.cont
+      this.info.length = message.length
+      this.info.name = message.name
+
       if (message.email) {
         this.messages.push(message)
         this.scrollToElement(document.getElementsByTagName('aside')[1])
         // const aside = document.getElementsByTagName('aside')[1]
         // aside.scrollTop = aside.scrollHeight + 100
       }
-      console.log(this.messages) // eslint-disable-line
     })
     socket.on('save', (message) => {
       if (message.save) {
@@ -139,14 +128,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.input-single {
-    width: 25%
-  }
-@media (max-width: 568px) {
-  .input-single {
-    width: 73%
-  }
-}
-</style>

@@ -16,7 +16,7 @@
         <q-popover touch-position>
           <div class="group" style="text-align: center;">
             <q-btn flat color="negative" v-close-overlay @click="remove()">
-              <q-icon name="fa fa-trash"/>
+              <q-icon name="fas fa-trash-alt"/>
             </q-btn>
             <q-btn flat color="primary" v-close-overlay @click="download()">
               <q-icon name="fa fa-download"/>

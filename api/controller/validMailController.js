@@ -60,7 +60,7 @@ async function listValidation ({name, data, header}, user) {
         if (element.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)) return element
       }
     })
-    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, cont, user.uid)
+    let {valid, invalid, sysInfo, sysValid} = await validationMail(email, user.uid, cont, data.length, name)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)
@@ -88,7 +88,7 @@ async function listValidation ({name, data, header}, user) {
   })
 }
 
-async function validationMail (email, cont, uid) {
+async function validationMail (email, uid, cont, length, nameFile) {
   const socket = validMailSocket.getUserById(uid)
   let verifierMail = await new Promise(resolve => {
     if (email) {
@@ -102,8 +102,15 @@ async function validationMail (email, cont, uid) {
     }
   })
   verifierMail.sysInfo = validation.verifyCode(verifierMail.sysInfo)
-  if (socket) app.io.of('/validMail').to(socket.socketId).emit('message', {info: verifierMail, email: email})
-  console.log(verifierMail, email, cont) // eslint-disable-line
+  if (socket) {
+    app.io.of('/validMail').to(socket.socketId).emit('message', {
+      info: verifierMail,
+      length: length,
+      email: email,
+      cont: cont,
+      name: nameFile
+    })
+  }
   return verifierMail
 }
 

@@ -49,4 +49,12 @@ export default {
 </script>
 
 <style>
+.input-single {
+    width: 25%
+  }
+@media (max-width: 568px) {
+  .input-single {
+    width: 73%
+  }
+}
 </style>
