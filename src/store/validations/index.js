@@ -12,27 +12,21 @@ export default {
   getters: {
     details (state) {
       const { list } = state
-      return list && list.map(item => {
-        return {
-          id: item.id,
-          createdAt: item.details.createdAt,
-          invalid: item.details.invalid,
-          valid: item.details.valid,
-          nameFile: item.details.nameFile,
-          length: item.details.length
-        }
-      }).sort((a, b) => {
+      return list && list.map(item => ({
+        id: item.id,
+        createdAt: item.details.createdAt,
+        invalid: item.details.invalid,
+        valid: item.details.valid,
+        nameFile: item.details.nameFile,
+        length: item.details.length
+      })).sort((a, b) => {
         if (a.createdAt > b.createdAt) return -1
         if (a.createdAt < b.createdAt) return 1
         return 0
       })
     },
 
-    selectById (state) {
-      return id => {
-        return state.list.find(list => list.id === id)
-      }
-    }
+    selectById: ({list}) => idFind => list.find(({ id: idList }) => idList === idFind)
   },
 
   mutations: {

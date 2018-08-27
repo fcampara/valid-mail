@@ -46,6 +46,9 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       components: [
+        'QRadio',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl',
         'QScrollObservable',
         'QBtnGroup',
         'QPageSticky',

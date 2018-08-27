@@ -1,5 +1,6 @@
 <template>
-    <q-table :data="tableData" :columns="columns" :loading="loading" :title="tableName" :filter="filter"
+    <q-table class="no-shadow" :data="tableData" :columns="columns" :loading="loading" :title="tableName" :filter="filter"
+      :rows-per-page-options="[15,50,0]"
       row-key="name" color="secondary"
     >
       <template slot="top-left" slot-scope="props">

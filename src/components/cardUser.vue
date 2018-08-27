@@ -8,8 +8,8 @@
         </q-item-main>
       </q-item>
       <q-card-actions>
-        <q-btn icon="fas fa-cogs" label="Configuração" flat/>
-        <q-btn @click="signOut" icon="fas fa-sign-out-alt" label="Sair" flat/>
+        <!-- <q-btn icon="fas fa-cogs" label="Configuração" flat/> -->
+        <q-btn @click="signOut" class="full-width" icon="fas fa-sign-out-alt" label="Sair" flat/>
       </q-card-actions>
     </q-card>
 </template>

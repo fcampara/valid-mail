@@ -10,7 +10,7 @@
 
     <q-btn :loading="loading.email" @click="submit" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar"/>
     <q-btn :loading="loading.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
-    <q-btn :loading="loading.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/>
+    <!-- <q-btn :loading="loading.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/> -->
   </form>
 </template>
 

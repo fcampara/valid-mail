@@ -20,12 +20,12 @@
       <q-list no-border link inset-delimiter >
         <card-user/>
 
-        <q-item :to="{ name: 'dashboard' }">
-          <q-item-main>Dashboard</q-item-main>
+        <q-item :to="{ name: 'home' }">
+          <q-item-main>Home</q-item-main>
         </q-item>
 
         <q-item :to="{ name: 'list' }">
-          <q-item-main>List</q-item-main>
+          <q-item-main>Lista</q-item-main>
         </q-item>
 
       </q-list>
@@ -37,7 +37,8 @@
 
     <q-page-container>
       <!-- <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in"> -->
-        <router-view />
+      <b-crumb/>
+      <router-view />
       <!-- </transition> -->
     </q-page-container>
   </q-layout>
@@ -47,7 +48,8 @@
 import { scroll } from 'quasar'
 const { getScrollTarget, setScrollPosition } = scroll
 
-import ValidSingle from '../components/validSingle.vue'
+import Breadcrumb from '../components/breadcrumb.vue'
+import validSingle from '../components/validSingle.vue'
 import timeline from '../components/timeline.vue'
 import cardUser from '../components/cardUser.vue'
 import { mapGetters, mapState, mapActions } from 'vuex'
@@ -64,9 +66,10 @@ export default {
     right: false
   }),
   components: {
-    'input-valid': ValidSingle,
+    'input-valid': validSingle,
     'card-user': cardUser,
-    't-line': timeline
+    't-line': timeline,
+    'b-crumb': Breadcrumb
   },
   computed: {
     ...mapGetters({
@@ -128,3 +131,8 @@ export default {
   }
 }
 </script>
+<style>
+  .teste {
+    background: black
+  }
+</style>
