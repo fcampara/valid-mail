@@ -105,7 +105,6 @@ export default {
     download () {
       const funct = this.listById()
       const row = funct(this.rowClicked)
-      console.log(row)
       let wb = XLSX.utils.book_new()
       wb.Props = {
         Title: this.optDownload.name,
