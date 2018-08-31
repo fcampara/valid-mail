@@ -18,9 +18,6 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'cardUser',
-  data: () => ({
-    teste: ''
-  }),
   computed: {
     ...mapGetters({
       user: 'auth/currentUser'

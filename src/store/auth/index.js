@@ -1,4 +1,5 @@
 import Firebase from 'firebase/app'
+import { errorLogin } from './../../statics/error/login.js'
 const staticUser = {
   displayName: '',
   email: '',
@@ -17,14 +18,14 @@ export default {
   },
 
   getters: {
-    currentUser (state) {
+    verifyEmail (state) {
       const { user } = state
-      return {
-        displayName: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        photoURL: user.photoURL
-      }
+      return user.emailVerified && user.emailVerified
+    },
+
+    currentUser (state) {
+      const { user: {displayName, email, uid, photoURL} } = state
+      return { displayName, email, uid, photoURL }
     },
 
     isAuthenticated (state) {
@@ -34,44 +35,15 @@ export default {
 
   mutations: {
     SET_USER (state, payload) {
-      let user = payload
-      state.user = user
+      state.user = payload
     },
 
     RESET_USER (state) {
       state.user = staticUser
     },
 
-    SET_MESSAGE_ERROR (state, payload) {
-      switch (payload.code) {
-        case 'auth/user-not-found':
-          state.message = {
-            type: 1,
-            error: 'Usuário não encontrado'
-          }
-          break
-
-        case 'auth/wrong-password':
-          state.message = {
-            type: 2,
-            error: 'Senha incorreta'
-          }
-          break
-
-        case 'auth/email-already-in-use':
-          state.message = {
-            type: 1,
-            error: 'Email já está sendo utilizado'
-          }
-          break
-
-        default:
-          state.message = {
-            type: 0,
-            error: 'Ocorreu um erro inesperado :('
-          }
-          break
-      }
+    SET_MESSAGE_ERROR (state, { code }) {
+      state.message = errorLogin[code]
     }
   },
 
@@ -84,6 +56,8 @@ export default {
           displayName: username,
           photoURL: './../statics/kong.png'
         })
+
+        currentUser.sendEmailVerification()
       }).catch(error => {
         commit('SET_MESSAGE_ERROR', error)
         throw state.message
@@ -114,6 +88,12 @@ export default {
       await Firebase.auth().signOut().then(() => {
         commit('SET_USER', {})
       })
+    },
+
+    async verifyEmail () {
+      Firebase.auth().languageCode = 'pt-BR'
+      const currentUser = Firebase.auth().currentUser
+      currentUser.sendEmailVerification()
     }
   }
 }

@@ -1,12 +1,13 @@
 <template>
   <q-input :loading="loading" clearable @keyup.13="validSingle()" inverted-light color="purple-1" class="absolute-center input-single" align="center"
-          v-model="email"
+          v-model="email" :disable="!isVerify"
           :before="beforeIcon"
           :after="[{icon: 'arrow_forward', content: !loading,  handler () {validSingle()}}]"
           placeholder="Válidar email" type="email"/>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Alert } from '../components/alert.js'
 
 export default {
@@ -18,6 +19,11 @@ export default {
       loading: false,
       beforeIcon: [{icon: 'mail', handler () {}}]
     }
+  },
+  computed: {
+    ...mapGetters({
+      isVerify: 'auth/verifyEmail'
+    })
   },
   methods: {
     validSingle () {
@@ -39,6 +45,9 @@ export default {
         this.alertError('Email incorreto')
       }
     }
+  },
+  created () {
+    console.log(this.isVerify)
   },
   watch: {
     email (newValue) {

@@ -131,8 +131,3 @@ export default {
   }
 }
 </script>
-<style>
-  .teste {
-    background: black
-  }
-</style>

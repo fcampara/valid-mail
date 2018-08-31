@@ -43,11 +43,6 @@ export default {
   computed: {
     color () { return sysValid => sysValid ? 'positive' : 'negative' },
     icon () { return sysValid => sysValid ? 'thumb_up' : 'thumb_down' }
-  },
-  methods: {
-    teste () {
-
-    }
   }
 }
 </script>

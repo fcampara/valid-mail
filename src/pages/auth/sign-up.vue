@@ -1,5 +1,5 @@
 <template>
-  <form class="sign-up-htm">
+  <form class="sign-up-htm"  @keyup.prevent.enter="submit">
     <q-field :error="$v.username.$dirty && $v.username.$invalid" :error-label="msgErrorUsername">
       <q-input @input="$v.username.$touch()" clearable v-model="username" float-label="Nome completo"/>
     </q-field>
@@ -16,7 +16,7 @@
       <q-input @input="$v.repeatPassword.$touch()" clearable v-model="repeatPassword" type="password" float-label="Confirmar senha"/>
     </q-field>
 
-    <q-btn @click="submit" class="full-width q-mt-xl" color="primary" label="Cadastrar"/>
+    <q-btn :loading="loading" @click="submit" class="full-width q-mt-xl" color="primary" label="Cadastrar"/>
   </form>
 </template>
 
@@ -26,9 +26,18 @@ import { required, sameAs, email, minLength, requiredIf, helpers } from 'vuelida
 
 const alpha = helpers.regex('alpha', /^[a-zA-Z\s\u00C0-\u00FF]*$/)
 export default {
-  mounted () {
-    this.$root.$on('navigate', this.reset)
-  },
+  name: 'singUp',
+  data: () => ({
+    email: '',
+    username: '',
+    password: '',
+    repeatPassword: '',
+    loading: false,
+    error: {
+      type: 0,
+      msg: ''
+    }
+  }),
   validations: {
     email: { required, email },
     username: { required, minLength: minLength(3), alpha },
@@ -39,16 +48,9 @@ export default {
         return this.password.length !== 0
       })}
   },
-  data: () => ({
-    email: '',
-    username: '',
-    password: '',
-    repeatPassword: '',
-    error: {
-      type: 0,
-      msg: ''
-    }
-  }),
+  mounted () {
+    this.$root.$on('navigate', this.reset)
+  },
   computed: {
     disabledRepeat () {
       return this.password.length === 0
@@ -88,8 +90,10 @@ export default {
     },
     submit () {
       if (!this.$v.$invalid) {
+        this.loading = true
         const { email, password, username } = { ...this.$data }
         this.singUp({email, password, username}).then().catch(({error, type}) => {
+          this.loading = false
           this.error.msg = error
           this.error.type = type
         })

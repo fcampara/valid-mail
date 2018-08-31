@@ -1,17 +1,14 @@
 import Firebase from 'firebase/app'
 
 export default ({ app, router, Vue, store }) => {
-  // Register the Firebase authentication listener
   Firebase.auth().onAuthStateChanged(user => {
     if (user) {
-      // Signed in. Let Vuex know.
       store.commit('auth/SET_USER', user)
       router.replace({ name: 'home' })
       new Vue(app) /* eslint-disable-line no-new */
     } else {
-      // Signed out. Let Vuex know.
       store.commit('auth/RESET_USER')
-      router.replace({ name: 'signIn' })
+      router.replace({ name: 'auth' })
       new Vue(app) /* eslint-disable-line no-new */
     }
   })

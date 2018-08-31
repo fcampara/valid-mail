@@ -8,9 +8,13 @@
       <q-input clearable @keyup.prevent.enter="submit" @input="$v.password.$touch()" v-model="password" type="password" float-label="Digite sua senha"/>
     </q-field>
 
-    <q-btn :loading="loading.email" @click="submit" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar"/>
-    <q-btn :loading="loading.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
-    <!-- <q-btn :loading="loading.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/> -->
+    <q-btn :loading="loading.email" :disable="disable.email" @click="submit" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar"/>
+    <q-btn :loading="loading.google" :disable="disable.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
+    <q-btn :loading="loading.facebook" :disable="disable.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/>
+    <!-- <div class="text-center p-t-12 q-mt-sm">
+      <span class="txt1"> Esqueceu a </span>
+      <a class="txt2" href="auth/recovery"> senha? </a>
+    </div> -->
   </form>
 </template>
 
@@ -18,13 +22,7 @@
 import { mapActions } from 'vuex'
 import { required, minLength, email } from 'vuelidate/lib/validators'
 export default {
-  mounted () {
-    this.$root.$on('navigate', this.reset)
-  },
-  validations: {
-    email: { required, email },
-    password: { required, minLength: minLength(6) }
-  },
+  name: 'signIn',
   data: () => ({
     email: '',
     password: '',
@@ -36,8 +34,20 @@ export default {
       email: false,
       google: false,
       facebook: false
+    },
+    disable: {
+      email: false,
+      google: false,
+      facebook: false
     }
   }),
+  validations: {
+    email: { required, email },
+    password: { required, minLength: minLength(6) }
+  },
+  mounted () {
+    this.$root.$on('navigate', this.reset)
+  },
   computed: {
     userError () {
       if (this.error.type === 1) return true
@@ -74,32 +84,56 @@ export default {
       signInWithPopup: 'auth/signInWithPopup'
     }),
     submit () {
-      if (!this.$v.$invalid) {
-        this.signIn()
-      } else {
-        this.$v.$touch()
-      }
+      !this.$v.$invalid ? this.signIn() : this.$v.$touch()
     },
     loginSocial (social) {
-      this.loading[social] = true
-      this.signInWithPopup(social).then(() => {
-        this.loading[social] = false
-      }).catch(() => {
-        this.loading[social] = false
+      this.loadingFunc(social)
+      this.signInWithPopup(social).then().catch(() => {
+        this.loadingFunc('clear')
       })
     },
     signIn () {
-      this.loading.email = true
-      this.signInWithEmail({
-        email: this.email,
-        password: this.password
-      }).then(() => {
-        this.loading.email = false
-      }).catch(({error, type}) => {
-        this.loading.email = false
+      this.loadingFunc('email')
+      const { email, password } = { ...this.$data }
+      this.signInWithEmail({ email, password }).then().catch(({error, type}) => {
+        this.loadingFunc('clear')
         this.error.type = type
         this.error.msg = error
       })
+    },
+    loadingFunc (from) {
+      switch (from) {
+        case 'email':
+          this.loading.email = true
+          this.disable.google = true
+          this.disable.facebook = true
+          break
+
+        case 'google':
+          this.loading.google = true
+          this.disable.facebook = true
+          this.disable.email = true
+          break
+
+        case 'facebook':
+          this.loading.facebook = true
+          this.disable.google = true
+          this.disable.email = true
+          break
+
+        case 'clear':
+          this.loading = {
+            email: false,
+            google: false,
+            facebook: false
+          }
+
+          this.disable = {
+            email: false,
+            google: false,
+            facebook: false
+          }
+      }
     },
     reset () {
       this.email = ''

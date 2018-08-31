@@ -65,6 +65,7 @@ module.exports = function (ctx) {
         'QTd',
         'QBtn',
         'QCard',
+        'QCardSeparator',
         'QCardActions',
         'QCardMain',
         'QCardMedia',
