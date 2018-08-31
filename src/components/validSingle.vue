@@ -46,9 +46,6 @@ export default {
       }
     }
   },
-  created () {
-    console.log(this.isVerify)
-  },
   watch: {
     email (newValue) {
       if (newValue.length === 0) this.beforeIcon = [{icon: 'mail', handler () {}}]

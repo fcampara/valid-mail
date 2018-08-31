@@ -4,7 +4,7 @@
       <q-item>
         <q-item-main>
           <q-input float-label="Digite seu email" value="asdfdsad"
-            :after="[{icon: 'arrow_forward', handler () {console.log('oi')}}]"
+            :after="[{icon: 'arrow_forward', handler () {}}]"
           />
         </q-item-main>
       </q-item>
