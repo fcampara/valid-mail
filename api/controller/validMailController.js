@@ -93,6 +93,7 @@ async function validationMail (email, uid, cont, length, nameFile) {
   let verifierMail = await new Promise(resolve => {
     if (email) {
       verifier.verify(email,{timeout: 30000}, (err, info) => { // eslint-disable-line
+        console.log(info) // eslint-disable-line
         let valid = 0, invalid = 0
         info.success ? valid++ : invalid++
         resolve({ invalid: invalid, valid: valid, sysValid: info.success, sysInfo: info.code })
