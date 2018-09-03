@@ -10,5 +10,9 @@ export const errorLogin = {
   'auth/email-already-in-use': {
     type: 1,
     error: 'Email já está sendo utilizado'
+  },
+  'auth/invalid-email': {
+    type: 1,
+    error: 'Email com formato incorreto'
   }
 }

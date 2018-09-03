@@ -11,10 +11,10 @@
     <q-btn :loading="loading.email" :disable="disable.email" @click="submit" class="full-width q-mt-md q-mb-xl" color="primary" label="Continuar"/>
     <q-btn :loading="loading.google" :disable="disable.google" icon="fab fa-google" class="full-width q-mt-xl google" label="Continuar com o Google" @click="loginSocial('google')"/>
     <q-btn :loading="loading.facebook" :disable="disable.facebook" icon="fab fa-facebook-f" class="full-width q-mt-sm facebook" label="Continuar com o Facebook" @click="loginSocial('facebook')"/>
-    <!-- <div class="text-center p-t-12 q-mt-sm">
+    <div class="text-center p-t-12 q-mt-sm">
       <span class="txt1"> Esqueceu a </span>
       <a class="txt2" href="auth/recovery"> senha? </a>
-    </div> -->
+    </div>
   </form>
 </template>
 

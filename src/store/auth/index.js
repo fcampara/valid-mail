@@ -77,7 +77,7 @@ export default {
       Firebase.auth().languageCode = 'pt'
       const provider = payload === 'google' ? new Firebase.auth.GoogleAuthProvider() : new Firebase.auth.FacebookAuthProvider()
 
-      Firebase.auth().signInWithPopup(provider).then((result) => {
+      await Firebase.auth().signInWithPopup(provider).then((result) => {
         commit('SET_USER', result.user)
       }).catch((error) => {
         throw error
@@ -90,10 +90,19 @@ export default {
       })
     },
 
-    async verifyEmail () {
+    verifyEmail () {
       Firebase.auth().languageCode = 'pt-BR'
       const currentUser = Firebase.auth().currentUser
       currentUser.sendEmailVerification()
+    },
+
+    async recoveryPassword ({ commit, state }, email) {
+      const auth = Firebase.auth()
+
+      await auth.sendPasswordResetEmail(email).then().catch(error => {
+        commit('SET_MESSAGE_ERROR', error)
+        throw state.message
+      })
     }
   }
 }
