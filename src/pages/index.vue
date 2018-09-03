@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding style="min-height: calc(0vh - 55px)">
     <div v-if="isVerify">
       <upload-list/>
     </div>

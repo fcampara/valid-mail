@@ -61,6 +61,7 @@ async function listValidation ({name, data, header}, user) {
       }
     })
     let {valid, invalid, sysInfo, sysValid} = await validationMail(email, user.uid, cont, data.length, name)
+    console.log(sysValid)
     details.valid += valid
     details.invalid += invalid
     item.unshift(sysInfo, sysValid)

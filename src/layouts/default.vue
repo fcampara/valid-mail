@@ -11,7 +11,7 @@
         </q-toolbar-title>
         <input-valid/>
           <q-btn flat round dense icon="notifications" @click="right = !right" >
-          <q-chip v-if="messages.length > 0" floating color="red"> * </q-chip>
+          <q-chip v-if="info.name" floating color="red"> * </q-chip>
         </q-btn>
       </q-toolbar>
     </q-layout-header>
@@ -32,7 +32,7 @@
     </q-layout-drawer>
 
     <q-layout-drawer id="timeline" side="right" v-model="right" content-class="bg-grey-3">
-      <t-line :messages="messages" :info="info"/>
+      <t-line/>
     </q-layout-drawer>
 
     <q-page-container>
@@ -45,9 +45,6 @@
 </template>
 
 <script>
-import { scroll } from 'quasar'
-const { getScrollTarget, setScrollPosition } = scroll
-
 import Breadcrumb from '../components/breadcrumb.vue'
 import validSingle from '../components/validSingle.vue'
 import timeline from '../components/timeline.vue'
@@ -56,12 +53,6 @@ import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'LayoutDefault',
   data: () => ({
-    messages: [],
-    info: {
-      cont: 0,
-      length: 0,
-      name: ''
-    },
     left: true,
     right: false
   }),
@@ -76,58 +67,32 @@ export default {
       user: 'auth/currentUser'
     }),
     ...mapState({
+      socket: state => state.socket.socket,
       load: state => state.validations.load,
-      list: state => state.validations.list
+      list: state => state.validations.list,
+      info: state => state.socket.info
     })
   },
   methods: {
     ...mapActions({
+      setMessage: 'socket/setMessage',
+      connectSocket: 'socket/connect',
       getList: 'validations/list'
     }),
-    scrollToElement (el) {
-      const target = getScrollTarget(el), offset = el.scrollHeight
-      setScrollPosition(target, offset, 1000)
-    },
     async loadList () {
       if (this.load === false) {
         this.$q.loading.show({message: 'Carregando sua lista de email'})
-        await this.getList().then(() => {
-          this.$q.loading.hide()
-        })
+        await this.getList().then(() => this.$q.loading.hide())
       }
-    }
-  },
-  watch: {
-    messages (newValue) {
-      if (newValue.length === 100) this.messages.shift()
     }
   },
   created () {
     this.loadList()
-    const io = require('socket.io-client')
-    const url = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/validMail' : 'http://valid-mail.herokuapp.com/validMail'
-    const socket = io.connect(url)
+    this.connectSocket()
 
-    socket.emit('setUser', this.user)
-
-    socket.on('message', (message) => {
-      this.info.cont = message.cont
-      this.info.length = message.length
-      this.info.name = message.name
-
-      if (message.email) {
-        this.messages.push(message)
-        this.scrollToElement(document.getElementsByTagName('aside')[1])
-        // const aside = document.getElementsByTagName('aside')[1]
-        // aside.scrollTop = aside.scrollHeight + 100
-      }
-    })
-    socket.on('save', (message) => {
-      if (message.save) {
-        this.messages.push(message)
-        this.scrollToElement(document.getElementsByTagName('aside')[1])
-      }
-    })
+    this.socket.emit('setUser', this.user)
+    this.socket.on('message', message => this.setMessage(message))
+    this.socket.on('save', message => this.setMessage(message))
   }
 }
 </script>
