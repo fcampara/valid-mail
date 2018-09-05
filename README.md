@@ -22,11 +22,17 @@ Authentication section. Create an account.
 
 ## Run
 First install dependencies
-    # npm install
+```
+# npm install
+```
 
 Second Start quasar-framework
-        https://quasar-framework.org/
-        # quasar-dev
+```
+https://quasar-framework.org/
+# quasar-dev
+```
 
 Third Start nodejs
-        # npm run node
+```
+# npm run node
+```
