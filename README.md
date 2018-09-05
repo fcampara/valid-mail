@@ -31,3 +31,9 @@ Third Start nodejs
 ```
 # npm run node
 ```
+
+## License
+
+Copyright (c) 2018-present Felipe Campara Silva
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
