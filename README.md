@@ -8,7 +8,7 @@ Set up your Firebase app in the console and get your configuration
 for web apps.
 
 Copy `firebase.conf.example.js` to `firebase.conf.js` and add the
-applicable Firebase configuration items, make the same thing to `api/config/serviceAccountKey.json`
+applicable Firebase configuration items, make the same thing to `api/config/serviceAccountKey.example.json`
 
 ## Database
 
