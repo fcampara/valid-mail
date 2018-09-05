@@ -20,4 +20,4 @@ yarn-error.log*
 
 # Firebase config
 firebase.conf.js
-api/config/serviceAccountKey.json
+/api/config/serviceAccountKey.json
