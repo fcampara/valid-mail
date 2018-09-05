@@ -34,6 +34,6 @@ Third Start nodejs
 
 ## License
 
-Copyright (c) 2018-present Felipe Campara Silva
+Copyright (c) 2018 Felipe Campara Silva
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
