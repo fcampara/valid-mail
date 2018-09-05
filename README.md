@@ -10,11 +10,6 @@ for web apps.
 Copy `firebase.conf.example.js` to `firebase.conf.js` and add the
 applicable Firebase configuration items, make the same thing to `api/config/serviceAccountKey.example.json`
 
-## Database
-
-The dashboard page has a button you can click to seed the Cloud
-Firestore database with some Todo items.
-
 ## Authentication
 
 Enable Email/Password, Google and Facebook sign-in methods to your Firebase console in the
