@@ -17,3 +17,5 @@ Firestore database with some Todo items.
 
 Enable Email/Password sign-in methods to your Firebase console in the
 Authentication section. Create an account.
+ 
+ teste 
