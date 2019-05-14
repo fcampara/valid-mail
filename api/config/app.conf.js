@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.use(history())
-app.use(serveStatic(path.join(__dirname, '../../dist/pwa-mat')))
+app.use(serveStatic(path.join(__dirname, '../dist/pwa-mat')))
 
 server.listen(port)
 
